@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Manavis</title>
+<link rel="stylesheet" type="text/css" href="css/style.css" />
+
+<div id="body">
+  <div id="side">
+  </div>
+  <div id="main">
+    <div id="status">
+      Manavis
+      <!-- TODO: Load icons et al for when new records need loading? -->
+    </div>
+    <div id="mask"><noscript>Javascript is required for this website.</noscript>
+      <div id="loadinfo" class="hidden">
+        <h3>Select records to load and display</h3>
+        <input type="file" id="input" name="records[]" multiple />
+        <output id="list"></output>
+        <div id="filesbar" class="progressbar">
+          <div class="percent">0%</div>
+        </div>
+        <div id="loadbar" class="progressbar">
+          <div class="percent">0%</div>
+        </div>
+      </div>
+    </div>
+    <div class="chart hidden">
+    </div>
+  </div>
+</div>
+
+<!-- Libs -->
+<script src="js/util/memoize.js"></script>
+<script src="js/util/progress.js"></script>
+<script src="js/d3/d3.js"></script>
+<script src="js/crossfilter/crossfilter.js"></script>
+<script src="js/dc/dc.js"></script>
+
+<!-- Processing -->
+<script src="js/mv.js"></script>
