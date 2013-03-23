@@ -1,0 +1,9 @@
+[submodule "js/crossfilter"]
+	path = js/crossfilter
+	url = https://github.com/square/crossfilter.git
+[submodule "js/d3"]
+	path = js/d3
+	url = https://github.com/mbostock/d3.git
+[submodule "js/dc"]
+	path = js/dc
+	url = https://github.com/NickQiZhu/dc.js.git
