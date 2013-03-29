@@ -111,7 +111,7 @@ var mv = {};
       }
       d = e.match(/^(?:\d+\.\d+) PC(\d+) (?:\d+):(?:\d+),(?:\d+) STAT (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) /);
       if (d) {
-        pcstat[d[1]] = {
+         var s = {
           str: parseInt(d[2]),
           agi: parseInt(d[3]),
           vit: parseInt(d[4]),
@@ -119,6 +119,8 @@ var mv = {};
           dex: parseInt(d[6]),
           luk: parseInt(d[7])
         };
+        s.blvl = stat.minLevelForStats(s.str, s.agi, s.vit, s.int, s.dex, s.luk);
+        pcstat[d[1]] = s;
         return;
       }
     });
@@ -128,12 +130,13 @@ var mv = {};
     dateDim, dateGroup,
     pcDim, pcGroup,
     mapDim, mapGroup,
-  /*
-   * How well defined a record is.
-   *  0 -> Record contains undefined data
-   *  1 -> Record is defined, but undefined records follow and may impede validity of findings
-   *  2 -> Record and all succeeding records are well defined
-   */
+    blvlDim, blvlGroup,
+    /*
+     * How well defined a record is.
+     *  0 -> Record contains undefined data
+     *  1 -> Record is defined, but undefined records follow and may impede validity of findings
+     *  2 -> Record and all succeeding records are well defined
+     */
     defDim, defGroup;
   /* The record files are set, do everything */
   function makeHeap() {
@@ -148,6 +151,8 @@ var mv = {};
     pcGroup = pcDim.group().reduceCount();
     mapDim = cfdata.dimension(function(d) { return d.map; });
     mapGroup = mapDim.group().reduce(a, s, z);
+    blvlDim = cfdata.dimension(function(d) { return d.pcstat ? d.pcstat.blvl : 0; });
+    blvlGroup = blvlDim.group().reduceCount();
     defDim = cfdata.dimension(function(d) { if (d.pcstat == undefined) { return 0; } if (d.date <= fullyDefinedCutoff) { return 1; } return 2; });
     defGroup = defDim.group().reduceCount();
     defDim.filterExact(2);
@@ -198,6 +203,19 @@ var mv = {};
 //       .elasticX(true)
       .elasticY(true)
       .x(d3.scale.linear().domain([pcDim.bottom(1)[0].pc, pcDim.top(1)[0].pc]).nice())
+      .renderHorizontalGridLines(true)
+      .title(function(d) { return d.key + ": " + d.value; })
+      .brushOn(true)
+      ;
+    mv.blvlChart = dc.barChart("#blvl-chart")
+      .width(630)
+      .height(130)
+      .margins({left: 60, right: 18, top: 5, bottom: 30})
+      .dimension(blvlDim)
+      .group(blvlGroup)
+      .gap(1)
+      .elasticY(true)
+      .x(d3.scale.linear().domain([0, blvlDim.top(1)[0].pcstat.blvl]))
       .renderHorizontalGridLines(true)
       .title(function(d) { return d.key + ": " + d.value; })
       .brushOn(true)
