@@ -6,4 +6,4 @@
 	url = https://github.com/mbostock/d3.git
 [submodule "js/dc"]
 	path = js/dc
-	url = https://github.com/NickQiZhu/dc.js.git
+	url = https://github.com/Freeyorp/dc.js.git
