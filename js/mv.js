@@ -2,7 +2,7 @@
 /*
  * Globals accessible via the agent console for debugging purposes
  */
-
+var mv = {};
 /*
  * Processing
  */
@@ -49,10 +49,10 @@
           loadbar.hide();
         }, 2000);
         makeHeap();
-        filesbar.complete();
         setTimeout(function() {
           filesbar.hide();
         }, 2000);
+        makeCharts();
       } else {
         filesbar.update(cur, fevt.target.files.length);
         nextFile();
@@ -82,21 +82,107 @@
       if (d == null) {
         return;
       }
+      var ts = new Date(0);
+      ts.setUTCSeconds(d[1]);
       records.push({
-        time: d[1],
-        pc: d[2],
-        map: d[3],
-        x: d[4],
-        y: d[5],
-        e: d[6],
-        j: d[7],
+        date: ts,
+        pc:   parseInt(d[2]),
+        map:  parseInt(d[3]),
+        x:    parseInt(d[4]),
+        y:    parseInt(d[5]),
+        e:    parseInt(d[6]),
+        j:    parseInt(d[7]),
         type: d[8]
       });
     });
+    console.log(records.length);
   }
-
+  var cfdata, all, dateDim, dateGroup, pcDim, pcGroup, mapDim, mapGroup;
   /* The record files are set, do everything */
   function makeHeap() {
-    /* TODO */
+    function a(p, d) { return { e: p.e + d.e, j: p.j + d.j, r: p.r + 1 }; }
+    function s(p, d) { return { e: p.e - d.e, j: p.j - d.j, r: p.r - 1 }; }
+    function z(p, d) { return { e: 0, j: 0, r: 0 }; }
+    cfdata = crossfilter(records);
+    all = cfdata.groupAll().reduce(a, s, z);
+    dateDim = cfdata.dimension(function(d) { return d3.time.hour.round(d.date); });
+    dateGroup = dateDim.group().reduceCount();
+    pcDim = cfdata.dimension(function(d) { return d.pc; });
+    pcGroup = pcDim.group().reduceCount();
+    mapDim = cfdata.dimension(function(d) { return d.map; });
+    mapGroup = mapDim.group().reduce(a, s, z);
+    /*
+     * The viewport is the bubble frame.
+     * - K: Map
+     * - X: Exp
+     * - Y: JExp
+     * - r: Record count
+     */
+  }
+  function makeCharts() {
+    d3.select("#mask")
+      .transition()
+      .style("opacity", 0)
+      .remove();
+    d3.selectAll(".chart-root")
+      .style("display", "inline")
+      .transition()
+      .style("opacity", 1)
+      ;
+    mv.dateChart = dc.barChart("#date-chart")
+      .width(630)
+      .height(130)
+      .margins({left: 60, right: 18, top: 5, bottom: 30})
+      .dimension(dateDim)
+      .group(dateGroup)
+      .centerBar(true)
+      .gap(1)
+      .elasticY(true)
+      .elasticX(true)
+      .x(d3.time.scale().domain([dateDim.bottom(1)[0].date, dateDim.top(1)[0].date]).nice(d3.time.hour))
+      .xUnits(d3.time.hours)
+      .xAxisPadding(2)
+    //     .renderVerticalGridLines(true)
+      .renderHorizontalGridLines(true)
+      .title(function(d) { return d.key + ": " + d.value; })
+      .brushOn(true)
+      ;
+    console.log([pcDim.bottom(1)[0], pcDim.top(1)[0]])
+    mv.pcChart = dc.barChart("#player-chart")
+      .width(630)
+      .height(130)
+      .margins({left: 60, right: 18, top: 5, bottom: 30})
+      .dimension(pcDim)
+      .group(pcGroup)
+      .gap(1)
+//       .elasticX(true)
+      .elasticY(true)
+      .x(d3.scale.linear().domain([pcDim.bottom(1)[0].pc, pcDim.top(1)[0].pc]).nice())
+      .renderHorizontalGridLines(true)
+      .title(function(d) { return d.key + ": " + d.value; })
+      .brushOn(true)
+      ;
+    mv.mapChart = dc.bubbleChart("#map-chart")
+      .width(700)
+      .height(500)
+      .margins({left: 60, right: 18, top: 5, bottom: 30})
+      .dimension(mapDim)
+      .group(mapGroup)
+      /* X */
+      .keyAccessor(function(d) { return d.value.e + 1; })
+      /* Y */
+      .valueAccessor(function(d) { return d.value.j + 1; })
+      /* R */
+      .radiusValueAccessor(function(d) { return Math.log(d.value.r + 1); })
+      .x(d3.scale.log().domain([1, 100000]))
+      .y(d3.scale.log().domain([1, 300000]))
+      .elasticX(true)
+      .elasticY(true)
+      .renderHorizontalGridLines(true)
+      .renderVerticalGridLines(true)
+      .title(function(d) { return "Map " + d.key; })
+      .renderTitle(true)
+      ;
+    dc.renderAll();
   }
 })();

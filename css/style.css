@@ -17,13 +17,17 @@ body {
   min-height: 40px;
 }
 
+#body {
+  min-width: 1350px;
+}
+
 #status {
   width: 100%;
   font-size: smaller;
 }
 
 #side {
-  width: 300px;
+  width: 650px;
   font-size: smaller;
 }
 
@@ -31,9 +35,16 @@ body {
 
 #loadinfo {
   width: 647px;
-  height: 400px;
-  border: 3px grey solid;
+/*   height: 400px; */
+  border: 1px grey solid;
   margin: auto;
+}
+
+/* Hide charts while loadinfo is shown */
+
+.chart-root {
+  display: none;
+  opacity: 0;
 }
 
 /* Loading bars */
@@ -44,10 +55,6 @@ body {
   font-size: 14px;
   clear: both;
   opacity: 0;
-  /* TODO: Use d3 for transitions instead */
-  -moz-transition: opacity 1s linear;
-  -o-transition: opacity 1s linear;
-  -webkit-transition: opacity 1s linear;
 }
 
 .progressbar.loading {
@@ -59,4 +66,15 @@ body {
   height: auto;
   width: 0;
   white-space: nowrap;
+}
+
+/* Utility */
+.fader {
+  -moz-transition: opacity 1s linear;
+  -o-transition: opacity 1s linear;
+  -webkit-transition: opacity 1s linear;
+}
+
+.help {
+  cursor: help;
 }
