@@ -75,29 +75,66 @@ var mv = {};
     nextFile();
   }, false);
   var records = [];
+  var pcstat = {};
+  var fullyDefinedCutoff = false;
+  function defLevelVerbose(level) {
+    switch (level) {
+      case 0: return "Undefined";
+      case 1: return "Mixed";
+      case 2: return "Defined";
+      default: console.log(d, d.data); throw "Unknown definedness case (" + d.data.key + "); this shouldn't happen";
+    }
+  }
   function parseRecords(data) {
     var spl = data.split(/\r?\n/);
     spl.forEach(function(e) {
-      var d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
-      if (d == null) {
+      var d;
+      d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
+      if (d) {
+        var ts = new Date(0);
+        ts.setUTCSeconds(d[1]);
+        records.push({
+          date: ts,
+          pc:   parseInt(d[2]),
+          map:  parseInt(d[3]),
+          x:    parseInt(d[4]),
+          y:    parseInt(d[5]),
+          e:    parseInt(d[6]),
+          j:    parseInt(d[7]),
+          type: d[8],
+          pcstat: pcstat[d[2]]
+        });
+        if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
+          fullyDefinedCutoff = ts;
+        }
         return;
       }
-      var ts = new Date(0);
-      ts.setUTCSeconds(d[1]);
-      records.push({
-        date: ts,
-        pc:   parseInt(d[2]),
-        map:  parseInt(d[3]),
-        x:    parseInt(d[4]),
-        y:    parseInt(d[5]),
-        e:    parseInt(d[6]),
-        j:    parseInt(d[7]),
-        type: d[8]
-      });
+      d = e.match(/^(?:\d+\.\d+) PC(\d+) (?:\d+):(?:\d+),(?:\d+) STAT (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) /);
+      if (d) {
+        pcstat[d[1]] = {
+          str: parseInt(d[2]),
+          agi: parseInt(d[3]),
+          vit: parseInt(d[4]),
+          int: parseInt(d[5]),
+          dex: parseInt(d[6]),
+          luk: parseInt(d[7])
+        };
+        return;
+      }
     });
     console.log(records.length);
   }
-  var cfdata, all, dateDim, dateGroup, pcDim, pcGroup, mapDim, mapGroup;
+  var cfdata, all,
+    dateDim, dateGroup,
+    pcDim, pcGroup,
+    mapDim, mapGroup,
+  /*
+   * How well defined a record is.
+   *  0 -> Record contains undefined data
+   *  1 -> Record is defined, but undefined records follow and may impede validity of findings
+   *  2 -> Record and all succeeding records are well defined
+   */
+    defDim, defGroup;
   /* The record files are set, do everything */
   function makeHeap() {
     function a(p, d) { return { e: p.e + d.e, j: p.j + d.j, r: p.r + 1 }; }
@@ -111,6 +148,9 @@ var mv = {};
     pcGroup = pcDim.group().reduceCount();
     mapDim = cfdata.dimension(function(d) { return d.map; });
     mapGroup = mapDim.group().reduce(a, s, z);
+    defDim = cfdata.dimension(function(d) { if (d.pcstat == undefined) { return 0; } if (d.date <= fullyDefinedCutoff) { return 1; } return 2; });
+    defGroup = defDim.group().reduceCount();
+    defDim.filterExact(2);
     /*
      * The viewport is the bubble frame.
      * - K: Map
@@ -161,6 +201,23 @@ var mv = {};
       .renderHorizontalGridLines(true)
       .title(function(d) { return d.key + ": " + d.value; })
       .brushOn(true)
+      ;
+    mv.defChart = dc.pieChart("#def-chart")
+      .width(630)
+      .height(130)
+      .radius(60)
+      .dimension(defDim)
+      .group(defGroup)
+      .label(function(d) { return defLevelVerbose(d.data.key); })
+      .title(function(d) { return defLevelVerbose(d.data.key) + ": " + d.value; })
+      .colorAccessor(function(d) { return d.data.key; })
+      .colorCalculator(function(k) { switch(k) {
+        case 0: return "#fd350d";
+        case 1: return "#fdae6b";
+        case 2: return "#6baed6";
+        default: throw "Definition chart: Color access key out of range!";
+      }})
+      .filter(2)
       ;
     mv.mapChart = dc.bubbleChart("#map-chart")
       .width(700)
