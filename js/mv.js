@@ -168,6 +168,8 @@ var mv = {};
       .margins({left: 60, right: 18, top: 5, bottom: 30})
       .dimension(mapDim)
       .group(mapGroup)
+      .colorDomain(function(d) { return [mapDim.bottom(1)[0].map, mapDim.top(1)[0].map]; })
+      .colorAccessor(function(d, i){ return d.key; })
       /* X */
       .keyAccessor(function(d) { return d.value.e + 1; })
       /* Y */
