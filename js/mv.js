@@ -85,6 +85,17 @@ var mv = {};
       default: console.log(d, d.data); throw "Unknown definedness case (" + d.data.key + "); this shouldn't happen";
     }
   }
+  function Stat(str, agi, vit, int, dex, luk) {
+    this.str = str;
+    this.agi = agi;
+    this.vit = vit;
+    this.int = int;
+    this.dex = dex;
+    this.luk = luk;
+    this.blvl = stat.minLevelForStats(str, agi, vit, int, dex, luk);
+  }
+  Stat.prototype.valueOf = function() { return this.str * 1e15 + this.agi * 1e12 + this.vit * 1e9 + this.int * 1e6 + this.dex * 1e3 + this.luk; /*this.str + ":" + this.agi + ":" + this.vit + ":" + this.dex + ":" + this.int + ":" + this.luk*/; };
+  var nullstat = new Stat(0,0,0,0,0,0);
   function parseRecords(data) {
     var spl = data.split(/\r?\n/);
     spl.forEach(function(e) {
@@ -102,7 +113,7 @@ var mv = {};
           e:    parseInt(d[6]),
           j:    parseInt(d[7]),
           type: d[8],
-          pcstat: pcstat[d[2]]
+          pcstat: pcstat[d[2]] ? pcstat[d[2]] : nullstat
         });
         if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
           fullyDefinedCutoff = ts;
@@ -111,26 +122,18 @@ var mv = {};
       }
       d = e.match(/^(?:\d+\.\d+) PC(\d+) (?:\d+):(?:\d+),(?:\d+) STAT (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) /);
       if (d) {
-         var s = {
-          str: parseInt(d[2]),
-          agi: parseInt(d[3]),
-          vit: parseInt(d[4]),
-          int: parseInt(d[5]),
-          dex: parseInt(d[6]),
-          luk: parseInt(d[7])
-        };
-        s.blvl = stat.minLevelForStats(s.str, s.agi, s.vit, s.int, s.dex, s.luk);
-        pcstat[d[1]] = s;
+        pcstat[d[1]] = new Stat(parseInt(d[2]), parseInt(d[3]), parseInt(d[4]), parseInt(d[5]), parseInt(d[6]), parseInt(d[7]));
         return;
       }
     });
-    console.log(records.length);
   }
+  var attrs = ["str", "agi", "vit", "int", "dex", "luk"];
   var cfdata, all,
     dateDim, dateGroup,
     pcDim, pcGroup,
     mapDim, mapGroup,
     blvlDim, blvlGroup,
+    attrDims, attrGroups,
     /*
      * How well defined a record is.
      *  0 -> Record contains undefined data
@@ -140,22 +143,36 @@ var mv = {};
     defDim, defGroup;
   /* The record files are set, do everything */
   function makeHeap() {
-    function a(p, d) { return { e: p.e + d.e, j: p.j + d.j, r: p.r + 1 }; }
-    function s(p, d) { return { e: p.e - d.e, j: p.j - d.j, r: p.r - 1 }; }
-    function z(p, d) { return { e: 0, j: 0, r: 0 }; }
     cfdata = crossfilter(records);
-    all = cfdata.groupAll().reduce(a, s, z);
+    mv.all = all = cfdata.groupAll().reduceCount();
     dateDim = cfdata.dimension(function(d) { return d3.time.hour.round(d.date); });
     dateGroup = dateDim.group().reduceCount();
     pcDim = cfdata.dimension(function(d) { return d.pc; });
     pcGroup = pcDim.group().reduceCount();
     mapDim = cfdata.dimension(function(d) { return d.map; });
-    mapGroup = mapDim.group().reduce(a, s, z);
-    blvlDim = cfdata.dimension(function(d) { return d.pcstat ? d.pcstat.blvl : 0; });
+    mapGroup = mapDim.group().reduce(
+      function(p, d) { return { e: p.e + d.e, j: p.j + d.j, r: p.r + 1 }; },
+      function(p, d) { return { e: p.e - d.e, j: p.j - d.j, r: p.r - 1 }; },
+      function(p, d) { return { e: 0, j: 0, r: 0 }; }
+    );
+    blvlDim = cfdata.dimension(function(d) { return d.pcstat != nullstat ? d.pcstat.blvl : 0; });
     blvlGroup = blvlDim.group().reduceCount();
-    defDim = cfdata.dimension(function(d) { if (d.pcstat == undefined) { return 0; } if (d.date <= fullyDefinedCutoff) { return 1; } return 2; });
+    mv.attrDims = attrDims = {};
+    mv.attrGroups = attrGroups = {};
+    for (var y = 0; y != attrs.length - 1; ++y) {
+      attrDims[attrs[y]] = {};
+      attrGroups[attrs[y]] = {};
+      for (var x = y + 1; x != attrs.length; ++x) {
+        attrDims[attrs[y]][attrs[x]] = cfdata.dimension(function(h, l) { return function(d) { return Math.floor(d.pcstat[h] / 7) * 7 * 1e3 + Math.floor(d.pcstat[l] / 7) * 7; } }(attrs[y], attrs[x]));
+        attrGroups[attrs[y]][attrs[x]] = attrDims[attrs[y]][attrs[x]].group().reduceCount();
+      }
+    }
+//     for (var i = 0; i != attrs.length; ++i) {
+//       attrDims[attrs[i]] = cfdata.dimension(function(d) { return d.pcstat ? d.pcstat[attrs[i]] });
+//       attrGroups[attrs[i]] = attrDims[attrs[i]].group().reduceCount();
+//     }
+    defDim = cfdata.dimension(function(d) { if (d.pcstat == nullstat) { return 0; } if (d.date <= fullyDefinedCutoff) { return 1; } return 2; });
     defGroup = defDim.group().reduceCount();
-    defDim.filterExact(2);
     /*
      * The viewport is the bubble frame.
      * - K: Map
@@ -192,7 +209,6 @@ var mv = {};
       .title(function(d) { return d.key + ": " + d.value; })
       .brushOn(true)
       ;
-    console.log([pcDim.bottom(1)[0], pcDim.top(1)[0]])
     mv.pcChart = dc.barChart("#player-chart")
       .width(630)
       .height(130)
@@ -235,7 +251,6 @@ var mv = {};
         case 2: return "#6baed6";
         default: throw "Definition chart: Color access key out of range!";
       }})
-      .filter(2)
       ;
     mv.mapChart = dc.bubbleChart("#map-chart")
       .width(700)
@@ -260,6 +275,31 @@ var mv = {};
       .title(function(d) { return "Map " + d.key; })
       .renderTitle(true)
       ;
+    mv.defChart.filter(2);
+    var c = function(v) { return "rgb(" + 25 * v + "," + 15 * v + "," + 3 * v + ")"; };
+    c.range = function() { return { length: 11 }; };
+    mv.attrCharts = {};
+    for (var y = 0; y != attrs.length - 1; ++y) {
+      mv.attrCharts[attrs[y]] = {};
+      for (var x = y + 1; x != attrs.length; ++x) {
+        mv.attrCharts[attrs[y]][attrs[x]] = dc.bubbleChart("#" + attrs[x] + "-" + attrs[y])
+          .width(100)
+          .height(100)
+          .margins({left: 0, right: 0, top: 0, bottom: 0})
+          .dimension(attrDims[attrs[y]][attrs[x]])
+          .group(attrGroups[attrs[y]][attrs[x]])
+          .colors(c)
+          .colorAccessor(function(d, i){ return d.value; })
+          .keyAccessor(function(k) { return function(d) { return d.key % 1e3; }; }(attrs[x]))
+          .valueAccessor(function(k) { return function(d) { return Math.floor(d.key / 1e3); }; }(attrs[y]))
+          .radiusValueAccessor(function(d) { return 3; })
+          .x(d3.scale.linear().domain([1, 99]))
+          .y(d3.scale.linear().domain([1, 99]))
+          .r(d3.scale.identity())
+          .renderLabel(false)
+          ;
+      }
+    }
     dc.renderAll();
   }
 })();

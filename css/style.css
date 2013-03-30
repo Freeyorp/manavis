@@ -78,3 +78,10 @@ body {
 .help {
   cursor: help;
 }
+
+.blob {
+  background-color: #445566;
+  height: 100px;
+  width: 100px;
+  float: left;
+}
