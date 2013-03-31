@@ -94,7 +94,7 @@ var mv = {};
     this.luk = luk;
     this.blvl = stat.minLevelForStats(str, agi, vit, int, dex, luk);
   }
-  Stat.prototype.valueOf = function() { return this.str * 1e15 + this.agi * 1e12 + this.vit * 1e9 + this.int * 1e6 + this.dex * 1e3 + this.luk; /*this.str + ":" + this.agi + ":" + this.vit + ":" + this.dex + ":" + this.int + ":" + this.luk*/; };
+  Stat.prototype.valueOf = function() { return this.str * 1e15 + this.agi * 1e12 + this.vit * 1e9 + this.int * 1e6 + this.dex * 1e3 + this.luk; };
   var nullstat = new Stat(0,0,0,0,0,0);
   function parseRecords(data) {
     var spl = data.split(/\r?\n/);
@@ -102,12 +102,13 @@ var mv = {};
       var d;
       d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
       if (d) {
+        var mapSID = parseInt(d[3]);
         var ts = new Date(0);
         ts.setUTCSeconds(d[1]);
         records.push({
           date: ts,
           pc:   parseInt(d[2]),
-          map:  parseInt(d[3]),
+          map:  map.nameByServerID(parseInt(d[3]), ts),
           x:    parseInt(d[4]),
           y:    parseInt(d[5]),
           e:    parseInt(d[6]),
@@ -167,10 +168,6 @@ var mv = {};
         attrGroups[attrs[y]][attrs[x]] = attrDims[attrs[y]][attrs[x]].group().reduceCount();
       }
     }
-//     for (var i = 0; i != attrs.length; ++i) {
-//       attrDims[attrs[i]] = cfdata.dimension(function(d) { return d.pcstat ? d.pcstat[attrs[i]] });
-//       attrGroups[attrs[i]] = attrDims[attrs[i]].group().reduceCount();
-//     }
     defDim = cfdata.dimension(function(d) { if (d.pcstat == nullstat) { return 0; } if (d.date <= fullyDefinedCutoff) { return 1; } return 2; });
     defGroup = defDim.group().reduceCount();
     /*
@@ -258,8 +255,7 @@ var mv = {};
       .margins({left: 60, right: 18, top: 5, bottom: 30})
       .dimension(mapDim)
       .group(mapGroup)
-      .colorDomain(function(d) { return [mapDim.bottom(1)[0].map, mapDim.top(1)[0].map]; })
-      .colorAccessor(function(d, i){ return d.key; })
+      .colorCalculator(d3.scale.category20c())
       /* X */
       .keyAccessor(function(d) { return d.value.e + 1; })
       /* Y */
