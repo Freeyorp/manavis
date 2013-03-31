@@ -91,12 +91,13 @@ var mv = {};
       var d;
       d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
       if (d) {
+        var mapSID = parseInt(d[3]);
         var ts = new Date(0);
         ts.setUTCSeconds(d[1]);
         records.push({
           date: ts,
           pc:   parseInt(d[2]),
-          map:  parseInt(d[3]),
+          map:  map.nameByServerID(parseInt(d[3]), ts),
           x:    parseInt(d[4]),
           y:    parseInt(d[5]),
           e:    parseInt(d[6]),
@@ -124,7 +125,6 @@ var mv = {};
         return;
       }
     });
-    console.log(records.length);
   }
   var cfdata, all,
     dateDim, dateGroup,
@@ -192,7 +192,6 @@ var mv = {};
       .title(function(d) { return d.key + ": " + d.value; })
       .brushOn(true)
       ;
-    console.log([pcDim.bottom(1)[0], pcDim.top(1)[0]])
     mv.pcChart = dc.barChart("#player-chart")
       .width(630)
       .height(130)
@@ -243,8 +242,7 @@ var mv = {};
       .margins({left: 60, right: 18, top: 5, bottom: 30})
       .dimension(mapDim)
       .group(mapGroup)
-      .colorDomain(function(d) { return [mapDim.bottom(1)[0].map, mapDim.top(1)[0].map]; })
-      .colorAccessor(function(d, i){ return d.key; })
+      .colorCalculator(d3.scale.category20c())
       /* X */
       .keyAccessor(function(d) { return d.value.e + 1; })
       /* Y */
