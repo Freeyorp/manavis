@@ -7,6 +7,11 @@ var mv = {};
  * Processing
  */
 (function() {
+  function softAssert(expr, msg) {
+    if (!expr) {
+      console.log("SOFTASSERT FAILURE: " + msg);
+    }
+  }
   /* Set up handlers for file selector */
   document.getElementById('input').addEventListener('change', function(fevt) {
     var reader = new FileReader();
@@ -87,14 +92,14 @@ var mv = {};
   }
   function parseRecords(data) {
     var spl = data.split(/\r?\n/);
-    spl.forEach(function(e) {
+    spl.forEach(function(e, i) {
       var d;
       d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
       if (d) {
         var mapSID = parseInt(d[3]);
         var ts = new Date(0);
         ts.setUTCSeconds(d[1]);
-        records.push({
+        var rec = {
           date: ts,
           pc:   parseInt(d[2]),
           map:  map.nameByServerID(parseInt(d[3]), ts),
@@ -103,11 +108,40 @@ var mv = {};
           e:    parseInt(d[6]),
           j:    parseInt(d[7]),
           type: d[8],
-          pcstat: pcstat[d[2]]
-        });
+          pcstat: pcstat[d[2]],
+          target: 0,
+          dmg: 0,
+          wpn: 0
+        };
         if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
           fullyDefinedCutoff = ts;
         }
+        /* XXX: Fragile horrible and unstructured, this whole thing needs a rewrite really */
+        if (i >= 2 && rec.type == "KILLXP") {
+          d = spl[i - 1].match(/^(\d+\.\d+) MOB(\d+) DEAD/);
+          if (d) {
+            var mID = parseInt(d[2]);
+            /* There's a massive wealth of data that can be collected from this. Number of assailants, weapons used, the relationships with the assailants... this can't be done with a simple lookbehind. For now, just extract what mob it was, and what the killing weapon used was. */
+            d = spl[i - 2].match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) WPNDMG MOB(\d+) (\d+) FOR (\d+) WPN (\d+)/);
+            if (d) {
+              softAssert(mID == parseInt(d[6]), "Integrity error: MOB ID mismatch!");
+//               softAssert(rec.pc == parseInt(d[2]), "Integrity error: PC ID mismatch!");
+              rec.target = parseInt(d[7]);
+              rec.dmg = parseInt(d[8]);
+              rec.wpn = parseInt(d[9]);
+            }
+          } else {
+            d = spl[i - 1].match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
+            if (d) {
+              var clone = records[records.length - 1];
+              softAssert(rec.map == clone.map, "Integrity error: MAP ID mismatch!");
+              rec.target = clone.target;
+              rec.dmg = clone.dmg; /* FIXME: Take into account actual assist damage */
+              rec.wpn = clone.wpn;
+            }
+          }
+        }
+        records.push(rec);
         return;
       }
       d = e.match(/^(?:\d+\.\d+) PC(\d+) (?:\d+):(?:\d+),(?:\d+) STAT (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) /);
@@ -131,6 +165,10 @@ var mv = {};
     pcDim, pcGroup,
     mapDim, mapGroup,
     blvlDim, blvlGroup,
+    typeDim, typeGroup,
+    targetDim, targetGroup,
+    dmgDim, dmgGroup,
+    wpnDim, wpnGroup,
     /*
      * How well defined a record is.
      *  0 -> Record contains undefined data
@@ -153,6 +191,13 @@ var mv = {};
     mapGroup = mapDim.group().reduce(a, s, z);
     blvlDim = cfdata.dimension(function(d) { return d.pcstat ? d.pcstat.blvl : 0; });
     blvlGroup = blvlDim.group().reduceCount();
+    typeDim = cfdata.dimension(function(d) { return d.type; });
+    typeGroup = typeDim.group().reduceCount();
+    targetDim = cfdata.dimension(function(d) { return d.target; });
+    targetGroup = targetDim.group().reduceCount();
+    wpnDim = cfdata.dimension(function(d) { return d.wpn; });
+    wpnGroup = wpnDim.group().reduceCount();
+    /* Add new dimensions above here */
     defDim = cfdata.dimension(function(d) { if (d.pcstat == undefined) { return 0; } if (d.date <= fullyDefinedCutoff) { return 1; } return 2; });
     defGroup = defDim.group().reduceCount();
     defDim.filterExact(2);
@@ -218,6 +263,30 @@ var mv = {};
       .renderHorizontalGridLines(true)
       .title(function(d) { return d.key + ": " + d.value; })
       .brushOn(true)
+      ;
+    mv.typeChart = dc.pieChart("#type-chart")
+      .width(630)
+      .height(130)
+      .radius(60)
+      .dimension(typeDim)
+      .group(typeGroup)
+      .colorCalculator(d3.scale.category20c())
+      ;
+    mv.targetChart = dc.pieChart("#target-chart")
+      .width(630)
+      .height(130)
+      .radius(60)
+      .dimension(targetDim)
+      .group(targetGroup)
+      .colorCalculator(d3.scale.category20c())
+      ;
+    mv.targetChart = dc.pieChart("#wpn-chart")
+      .width(630)
+      .height(130)
+      .radius(60)
+      .dimension(wpnDim)
+      .group(wpnGroup)
+      .colorCalculator(d3.scale.category20c())
       ;
     mv.defChart = dc.pieChart("#def-chart")
       .width(630)
