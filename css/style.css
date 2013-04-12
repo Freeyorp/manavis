@@ -42,7 +42,7 @@ body {
 
 /* Hide charts while loadinfo is shown */
 
-.chart-root {
+.vis-hide {
   display: none;
   opacity: 0;
 }

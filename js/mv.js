@@ -214,7 +214,7 @@ var mv = {};
       .transition()
       .style("opacity", 0)
       .remove();
-    d3.selectAll(".chart-root")
+    d3.selectAll(".vis-hide")
       .style("display", "inline")
       .transition()
       .style("opacity", 1)
