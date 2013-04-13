@@ -13,11 +13,11 @@ body {
   overflow: hidden;
 }
 
-#body, #main, #status, .side {
+body, #main, #status, .side {
   min-height: 40px;
 }
 
-#body {
+body {
   min-width: 1350px;
 }
 
