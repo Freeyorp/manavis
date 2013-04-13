@@ -220,7 +220,7 @@ var mv = {};
       .style("opacity", 1)
       ;
     mv.dateChart = dc.barChart("#date-chart")
-      .width(630)
+      .width(700)
       .height(130)
       .margins({left: 60, right: 18, top: 5, bottom: 30})
       .dimension(dateDim)
@@ -238,7 +238,7 @@ var mv = {};
       .brushOn(true)
       ;
     mv.pcChart = dc.barChart("#player-chart")
-      .width(630)
+      .width(700)
       .height(130)
       .margins({left: 60, right: 18, top: 5, bottom: 30})
       .dimension(pcDim)
@@ -252,7 +252,7 @@ var mv = {};
       .brushOn(true)
       ;
     mv.blvlChart = dc.barChart("#blvl-chart")
-      .width(630)
+      .width(380)
       .height(130)
       .margins({left: 60, right: 18, top: 5, bottom: 30})
       .dimension(blvlDim)
@@ -265,7 +265,7 @@ var mv = {};
       .brushOn(true)
       ;
     mv.typeChart = dc.pieChart("#type-chart")
-      .width(630)
+      .width(380)
       .height(130)
       .radius(60)
       .dimension(typeDim)
@@ -273,7 +273,7 @@ var mv = {};
       .colorCalculator(d3.scale.category20c())
       ;
     mv.targetChart = dc.pieChart("#target-chart")
-      .width(630)
+      .width(380)
       .height(130)
       .radius(60)
       .dimension(targetDim)
@@ -281,7 +281,7 @@ var mv = {};
       .colorCalculator(d3.scale.category20c())
       ;
     mv.targetChart = dc.pieChart("#wpn-chart")
-      .width(630)
+      .width(380)
       .height(130)
       .radius(60)
       .dimension(wpnDim)
@@ -289,7 +289,7 @@ var mv = {};
       .colorCalculator(d3.scale.category20c())
       ;
     mv.defChart = dc.pieChart("#def-chart")
-      .width(630)
+      .width(380)
       .height(130)
       .radius(60)
       .dimension(defDim)

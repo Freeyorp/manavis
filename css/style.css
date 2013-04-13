@@ -6,14 +6,14 @@ body {
 }
 
 /* Top-level layout */
-#side {
+.side {
   float: right;
 }
 #main {
   overflow: hidden;
 }
 
-#body, #main, #status, #side {
+#body, #main, #status, .side {
   min-height: 40px;
 }
 
@@ -26,8 +26,8 @@ body {
   font-size: smaller;
 }
 
-#side {
-  width: 650px;
+.side {
+  width: 400px;
   font-size: smaller;
 }
 
