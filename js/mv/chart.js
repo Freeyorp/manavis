@@ -20,7 +20,7 @@ var mv = function(mv) {
         ;
       mv.charts.target = pie(monoGroup(dc.pieChart("#target-chart"), "target"))
         ;
-      mv.charts.target = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
+      mv.charts.wpn = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
         ;
       mv.charts.def = pie(monoGroup(dc.pieChart("#def-chart"), "def"))
         .label(function(d) { return defLevelVerbose(d.data.key); })
