@@ -11,8 +11,6 @@ var mv = function(mv) {
     filesbar.label = function () {
       return fbase() == '100%' ? "Loaded " + mv.loader.numfiles() + " file(s) - Done!" : "Loading file " + mv.loader.curfile() + " of " + mv.loader.numfiles() + " - " + fbase();
     }
-    loadbar.show();
-    filesbar.show();
     mv.loader.onbulkstart = function(fevt) {
       loadbar.show();
       filesbar.show();
