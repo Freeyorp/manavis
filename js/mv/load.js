@@ -47,9 +47,9 @@ var mv = function(mv) {
           } else {
             nextFile();
           }
-        }
+        };
         function nextFile() {
-          setTimeout(function(){ console.log("Loading file ", curfile); reader.readAsBinaryString(fevt.target.files[curfile]);}, 0);
+          reader.readAsBinaryString(fevt.target.files[curfile]);
         }
         nextFile();
       }, false);
