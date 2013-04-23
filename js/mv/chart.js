@@ -32,6 +32,7 @@ var mv = function(mv) {
           case 2: return "#6baed6";
           default: throw "Definition chart: Color access key out of range!";
         }})
+        .filter(2)
         ;
       mv.charts.map = monoGroup(margined(wide(dc.bubbleChart("#map-chart"))), "map")
         .height(500)
@@ -51,6 +52,8 @@ var mv = function(mv) {
         .title(function(d) { return "Map " + d.key; })
         .renderTitle(true)
         ;
+      mv.charts.stats = trellisChart("#stat-chart", ["str", "agi", "vit", "dex", "int", "luk"].map(function(d) { mv.heap[d].name = d; return mv.heap[d]; }));
+      dc.renderlet(function() { mv.charts.stats(); });
       dc.renderAll();
     }
     function defLevelVerbose(level) {

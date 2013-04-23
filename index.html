@@ -8,16 +8,23 @@
   <div class="side">
     <div class="vis-hide">
       <div id="blvl-chart">
-        <h3>Experience gain instances by Character Base Level <a class="reset" style="display: none;" href="javascript:mv.charts.blvl.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Instance breakdown by Character Base Level <a class="reset" style="display: none;" href="javascript:mv.charts.blvl.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
+      <div id="stat-chart">
+        <h3>Instance breakdown by Stat allocation</h3>
+      </div>
+    </div>
+  </div>
+  <div class="side">
+    <div class="vis-hide">
       <div id="type-chart">
-        <h3>Experience gain instances by Type <a class="reset" style="display: none;" href="javascript:mv.charts.type.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Instance breakdown by Type <a class="reset" style="display: none;" href="javascript:mv.charts.type.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="target-chart">
-        <h3>Experience gain instances by Target <a class="reset" style="display: none;" href="javascript:mv.charts.target.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Instance breakdown by Target <a class="reset" style="display: none;" href="javascript:mv.charts.target.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="wpn-chart">
-        <h3>Experience gain instances by Weapon <a class="reset" style="display: none;" href="javascript:mv.charts.wpn.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Instance breakdown by Weapon <a class="reset" style="display: none;" href="javascript:mv.charts.wpn.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="def-chart">
         <h3>Definedness of records <span class="help" title="If logs are missing between server boot and the logs provided, not all information will be available for all records. Definedness of records falls into three categories. Records with undefined data; records with well defined data, but mixed in with records having undefined data, limiting validity of inferences; and records after any uncertain times, which are fully well defined. It is highly recommended that you filter results to only include records which are in fully well defined times; however, this may not always be possible.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.def.filterAll();dc.redrawAll();">clear</a></h3>
@@ -44,13 +51,13 @@
     </div>
     <div class="vis-hide">
       <div id="map-chart">
-        <h3>Experience gain by Map <span class="help" title="Bubble size indicates instances of experience gain for that map. X axis position indicates the sum of level experience gain for that map. Y axis position indicates the sum of job experience gain for that map.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Breakdown by Map <span class="help" title="Bubble size indicates instances of experience gain for that map. X axis position indicates the sum of level experience gain for that map. Y axis position indicates the sum of job experience gain for that map.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="date-chart">
-        <h3>Experience gain instances by Date <a class="reset" style="display: none;" href="javascript:mv.charts.date.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Instance breakdown by Date <a class="reset" style="display: none;" href="javascript:mv.charts.date.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="player-chart">
-        <h3>Experience gain instances by Character ID <span class="help" title="Older to newer characters appear left to right, respectively.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.pc.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Instance breakdown by Character ID <span class="help" title="Older to newer characters appear left to right, respectively.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.pc.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
     </div>
   </div>
@@ -73,3 +80,4 @@
 <script src="js/mv/load.js"></script>
 <script src="js/mv/main.js"></script>
 <script src="js/mv/parse.js"></script>
+<script src="js/util/trellis-chart.js"></script>

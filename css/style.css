@@ -68,6 +68,15 @@ body {
   white-space: nowrap;
 }
 
+/* Stat chart */
+
+#stat-chart svg g g.column .border-line {
+  fill: none;
+  stroke: #ccc;
+  opacity: .5;
+  shape-rendering: crispEdges;
+}
+
 /* Utility */
 .fader {
   -moz-transition: opacity 1s linear;

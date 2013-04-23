@@ -24,9 +24,9 @@ var mv = function(mv) {
             j:    parseInt(d[7]),
             type: d[8],
             pcstat: pcstat[d[2]],
-            target: 0,
-            dmg: 0,
-            wpn: 0
+            target: -1010,
+            dmg: -1010,
+            wpn: -1010
           };
           if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
             fullyDefinedCutoff = ts;
@@ -42,8 +42,11 @@ var mv = function(mv) {
                 softAssert(mID == parseInt(d[6]), "Integrity error: MOB ID mismatch!");
   //               softAssert(rec.pc == parseInt(d[2]), "Integrity error: PC ID mismatch!");
                 rec.target = parseInt(d[7]);
+                softAssert(rec.target, "Unknown target!")
                 rec.dmg = parseInt(d[8]);
                 rec.wpn = parseInt(d[9]);
+              } else {
+//                 console.error("No match (deathblow):", spl[i - 2]);
               }
             } else {
               d = spl[i - 1].match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);
@@ -51,8 +54,11 @@ var mv = function(mv) {
                 var clone = parser.records[parser.records.length - 1];
                 softAssert(rec.map == clone.map, "Integrity error: MAP ID mismatch!");
                 rec.target = clone.target;
+                softAssert(rec.target, "Unknown (cloned) target!");
                 rec.dmg = clone.dmg; /* FIXME: Take into account actual assist damage */
                 rec.wpn = clone.wpn;
+              } else {
+//                 console.error("No match (clone):", spl[i - 1]);
               }
             }
           }
@@ -70,6 +76,12 @@ var mv = function(mv) {
             luk: parseInt(d[7])
           };
           s.blvl = stat.minLevelForStats(s.str, s.agi, s.vit, s.int, s.dex, s.luk);
+          s.str = Math.floor(s.str / 10);
+          s.agi = Math.floor(s.agi / 10);
+          s.vit = Math.floor(s.vit / 10);
+          s.int = Math.floor(s.int / 10);
+          s.dex = Math.floor(s.dex / 10);
+          s.luk = Math.floor(s.luk / 10);
           pcstat[d[1]] = s;
           return;
         }
