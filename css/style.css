@@ -26,8 +26,15 @@ body {
   font-size: smaller;
 }
 
-.side {
+.med {
   width: 400px;
+}
+
+.thin {
+  width: 250px;
+}
+
+.side {
   font-size: smaller;
 }
 
@@ -35,7 +42,6 @@ body {
 
 #loadinfo {
   width: 647px;
-/*   height: 400px; */
   border: 1px grey solid;
   margin: auto;
 }

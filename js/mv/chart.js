@@ -13,7 +13,7 @@ var mv = function(mv) {
       mv.charts.pc = bar(monoGroup(wide(dc.barChart("#player-chart")), "pc"))
         .x(d3.scale.linear().domain([mv.heap.pc.dim.bottom(1)[0].pc, mv.heap.pc.dim.top(1)[0].pc]).nice())
         ;
-      mv.charts.blvl = bar(monoGroup(thin(dc.barChart("#blvl-chart")), "blvl"))
+      mv.charts.blvl = bar(monoGroup(med(dc.barChart("#blvl-chart")), "blvl"))
         .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl]))
         ;
       mv.charts.type = pie(monoGroup(dc.pieChart("#type-chart"), "type"))
@@ -71,9 +71,14 @@ var mv = function(mv) {
       .width(700)
       ;
   }
-  function thin(chart) {
+  function med(chart) {
     return chart
       .width(380)
+      ;
+  }
+  function thin(chart) {
+    return chart
+      .width(250)
       ;
   }
   function short(chart) {
@@ -89,6 +94,7 @@ var mv = function(mv) {
     return chart
       .dimension(mv.heap[name].dim)
       .group(mv.heap[name].group)
+      .transitionDuration(500)
       ;
   }
   function bar(chart) {
@@ -101,8 +107,8 @@ var mv = function(mv) {
       ;
   }
   function pie(chart) {
-    return thin(short(chart))
-      .radius(60)
+    return thin(chart)
+      .radius(90)
       .colorCalculator(d3.scale.category20c())
       ;
   }
