@@ -42,14 +42,15 @@ var mv = function(mv) {
         /* Y */
         .valueAccessor(function(d) { return d.value.j + 1; })
         /* R */
-        .radiusValueAccessor(function(d) { return Math.log(d.value.r + 1); })
+        .radiusValueAccessor(function(d) { return Math.sqrt(d.value.r); })
+        .maxBubbleRelativeSize(0.05)
         .x(d3.scale.log().domain([1, 100000]))
         .y(d3.scale.log().domain([1, 300000]))
         .elasticX(true)
         .elasticY(true)
         .renderHorizontalGridLines(true)
         .renderVerticalGridLines(true)
-        .title(function(d) { return "Map " + d.key; })
+        .title(function(d) { return "Map " + d.key + ":" + d.value.r; })
         .renderTitle(true)
         ;
       mv.charts.stats = trellisChart("#stat-chart", ["str", "agi", "vit", "dex", "int", "luk"].map(function(d) { mv.heap[d].name = d; return mv.heap[d]; }));
