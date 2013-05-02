@@ -24,9 +24,9 @@ var mv = function(mv) {
             j:    parseInt(d[7]),
             type: d[8],
             pcstat: pcstat[d[2]],
-            target: -1010,
+            target: "UNKNOWN",
             dmg: -1010,
-            wpn: -1010
+            wpn: "UNKNOWN"
           };
           if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
             fullyDefinedCutoff = ts;
@@ -41,10 +41,10 @@ var mv = function(mv) {
               if (d) {
                 softAssert(mID == parseInt(d[6]), "Integrity error: MOB ID mismatch!");
   //               softAssert(rec.pc == parseInt(d[2]), "Integrity error: PC ID mismatch!");
-                rec.target = parseInt(d[7]);
+                rec.target = mob.nameByServerID(d[7]);
                 softAssert(rec.target, "Unknown target!")
                 rec.dmg = parseInt(d[8]);
-                rec.wpn = parseInt(d[9]);
+                rec.wpn = item.nameByServerID(d[9]);
               } else {
 //                 console.error("No match (deathblow):", spl[i - 2]);
               }
