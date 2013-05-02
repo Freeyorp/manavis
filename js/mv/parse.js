@@ -26,7 +26,8 @@ var mv = function(mv) {
             pcstat: pcstat[d[2]],
             target: "UNKNOWN",
             dmg: -1010,
-            wpn: "UNKNOWN"
+            wpn: "UNKNOWN",
+            atktype: "UNKNOWN"
           };
           if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
             fullyDefinedCutoff = ts;
@@ -45,7 +46,16 @@ var mv = function(mv) {
                 softAssert(rec.target, "Unknown target!")
                 rec.dmg = parseInt(d[8]);
                 rec.wpn = item.nameByServerID(d[9]);
+                rec.atktype = "Physical";
               } else {
+                /* Not weapon damage, perhaps it was spell damage? */
+                d = spl[i - 2].match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) SPELLDMG MOB(\d+) (\d+) FOR (\d+) BY ([^ ]+)/);
+                if (d) {
+                  rec.target = mob.nameByServerID(d[7]);
+                  rec.dmg = parseInt(d[8]);
+                  rec.wpn = d[9];
+                  rec.atktype = "Magical";
+                }
 //                 console.error("No match (deathblow):", spl[i - 2]);
               }
             } else {
@@ -57,6 +67,7 @@ var mv = function(mv) {
                 softAssert(rec.target, "Unknown (cloned) target!");
                 rec.dmg = clone.dmg; /* FIXME: Take into account actual assist damage */
                 rec.wpn = clone.wpn;
+                rec.atktype = clone.atktype; /* FIXME: Take into account what the assists used */
               } else {
 //                 console.error("No match (clone):", spl[i - 1]);
               }
