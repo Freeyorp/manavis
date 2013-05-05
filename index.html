@@ -7,6 +7,10 @@
 <body onload="mv.init();">
   <div class="side med">
     <div class="vis-hide">
+      <div id="connect-status">
+        <h3>Users</h3>
+        <ul id="users-status"></ul>
+      </div>
       <div id="blvl-chart">
         <h3>Instance breakdown by Character Base Level <a class="reset" style="display: none;" href="javascript:mv.charts.blvl.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
@@ -17,13 +21,13 @@
   </div>
   <div class="side thin">
     <div class="vis-hide">
-      <div id="type-chart">
       <div id="target-chart">
         <h3>Instance breakdown by Target <a class="reset" style="display: none;" href="javascript:mv.charts.target.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="wpn-chart">
         <h3>Instance breakdown by Weapon <a class="reset" style="display: none;" href="javascript:mv.charts.wpn.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
+      <div id="type-chart">
         <h3>Instance breakdown by Type <a class="reset" style="display: none;" href="javascript:mv.charts.type.filterAll();dc.redrawAll();">clear</a></h3>
       </div>
       <div id="def-chart">
@@ -36,19 +40,6 @@
       Manavis
       TODO: Load icons et al for when new records need loading?
     </div>-->
-    <div id="mask"><noscript>Javascript is required for this website.</noscript>
-      <div id="loadinfo" class="fader">
-        <h3>Select records to load and display</h3>
-        <input type="file" id="input" name="records[]" multiple />
-        <output id="list"></output>
-        <div id="filesbar" class="progressbar fader">
-          <div class="percent">0%</div>
-        </div>
-        <div id="loadbar" class="progressbar fader">
-          <div class="percent">0%</div>
-        </div>
-      </div>
-    </div>
     <div class="vis-hide">
       <div id="map-chart">
         <h3>Breakdown by Map <span class="help" title="Bubble size indicates instances of experience gain for that map. X axis position indicates the sum of level experience gain for that map. Y axis position indicates the sum of job experience gain for that map.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a></h3>
@@ -61,6 +52,23 @@
       </div>
     </div>
   </div>
+  <div id="mask"><noscript><h1>Javascript is required for this website.</h1></noscript>
+    <div id="loadinfo" class="fader">
+      <h1>Manavis</h1>
+      <input id="connect-option" name="connect" type="checkbox" checked></input>
+      <label for="connect">Connect to server</label>
+      <h3>Select records to load and display</h3>
+      <p>You can load any number of files at once.</p>
+      <input type="file" id="input" name="records[]" multiple />
+      <output id="list"></output>
+      <div id="filesbar" class="progressbar fader">
+        <div class="percent">0%</div>
+      </div>
+      <div id="loadbar" class="progressbar fader">
+        <div class="percent">0%</div>
+      </div>
+    </div>
+  </div>
 </body>
 
 <!-- Libs -->
@@ -70,6 +78,8 @@
 <script src="js/crossfilter/crossfilter.js"></script>
 <script src="js/dc/dc.js"></script>
 
+<script src="/socket.io/socket.io.js"></script>
+
 <!-- Components -->
 <script src="js/comp/item.js"></script>
 <script src="js/comp/map.js"></script>
@@ -78,6 +88,7 @@
 
 <!-- Processing -->
 <script src="js/mv/chart.js"></script>
+<script src="js/mv/connect.js"></script>
 <script src="js/mv/heap.js"></script>
 <script src="js/mv/load.js"></script>
 <script src="js/mv/main.js"></script>

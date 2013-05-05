@@ -61,6 +61,16 @@ var mv = function(mv) {
       dc.renderlet(function() { mv.charts.stats(); });
       dc.renderAll();
     }
+    charter.filters = function() {
+      var r = {}, f;
+      for (var k in mv.charts) {
+        f = mv.charts[k].filter();
+        if (f != null) {
+          r[k] = f;
+        }
+      }
+      return r;
+    }
     function defLevelVerbose(level) {
       switch (level) {
         case 0: return "Undefined";

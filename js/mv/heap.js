@@ -1,6 +1,7 @@
 var mv = function(mv) {
   mv.heap = function() {
     var heap = {};
+    var monoGroups = {};
     var statGran = 10;
     heap.init = function() {
       function ea(p, d) { p.e += d.e; p.j += d.j; p.r++; return p; }

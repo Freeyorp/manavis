@@ -48,6 +48,10 @@ var mv = function(mv) {
           .style("opacity", 1)
           ;
         mv.charter.init();
+        console.log(document.getElementById("connect-option").checked);
+        if (document.getElementById("connect-option").checked) {
+          mv.socket.connect();
+        }
       }, 2000);
     }
   };

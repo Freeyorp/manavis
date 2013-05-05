@@ -10,11 +10,11 @@ function trellisChart(anchor, monoGroups) {
   var subChartLength = 57;
   var subChartUnpaddedLength = 50;
   var subChartPadding = 7;
+  var filler = d3.scale.log().domain([1, 2]).range([0, 255]);
 
   var margin = {top: 10, right: 10, bottom: 20, left: 10};
   var anchor = d3.select(anchor);
   var g = anchor.select("g");
-  var filler = d3.scale.log().domain([1, 2]).range([0, 255]);
 
   var _chart = function() {
     if (g.empty()) {
@@ -124,6 +124,16 @@ function trellisChart(anchor, monoGroups) {
       .exit()
         .remove()
       ;
+  }
+
+  _chart.filter = function() {
+    /*
+     * TODO:
+     * This is going to be interesting. As the chart is not charting a single
+     * monogroup, and most code is built around this assumption, this might
+     * well end up being a messy special case.
+     */
+    return null;
   }
 
   return _chart;
