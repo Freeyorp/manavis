@@ -46,9 +46,10 @@ var mv = function(mv) {
         .valueAccessor(function(d) { return d.value.j + 1; })
         /* R */
         .radiusValueAccessor(function(d) { return Math.sqrt(d.value.r); })
-        .maxBubbleRelativeSize(0.05)
+        .maxBubbleRelativeSize(0.045)
         .x(d3.scale.log().domain([1, 100000]))
         .y(d3.scale.log().domain([1, 300000]))
+        .axisPixelPadding({left:5, top: 10, right: 15, bottom: 5})
         .elasticX(true)
         .elasticY(true)
         .renderHorizontalGridLines(true)
