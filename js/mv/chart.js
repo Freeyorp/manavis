@@ -1,5 +1,8 @@
 var mv = function(mv) {
   mv.charts = {};
+  var thinWidth = 250;
+  var medWidth = 400;
+  var wideWidth = Math.max(700, document.width - thinWidth - medWidth);
   mv.charter = function() {
     var charter = {};
     charter.init = function() {
@@ -69,17 +72,17 @@ var mv = function(mv) {
   }();
   function wide(chart) {
     return chart
-      .width(700)
+      .width(wideWidth)
       ;
   }
   function med(chart) {
     return chart
-      .width(380)
+      .width(medWidth)
       ;
   }
   function thin(chart) {
     return chart
-      .width(250)
+      .width(thinWidth)
       ;
   }
   function short(chart) {
