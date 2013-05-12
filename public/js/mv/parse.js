@@ -178,11 +178,6 @@ var mv = function(mv) {
     }
     fullyDefinedCutoff = postProcessedfullyDefinedCutoff;
   }
-  function softAssert(expr, msg) {
-    if (!expr) {
-      console.error("SOFTASSERT FAILURE: " + msg);
-    }
-  }
   function createBlobLink() {
     /* Make the scrubbed data available for download as a blob. */
     var blob = new Blob(JSON.stringify(parser.records));
