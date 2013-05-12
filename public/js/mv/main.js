@@ -27,7 +27,13 @@ var mv = function(mv) {
     mv.loader.init(handleFile, postLoading);
     function handleFile(data, curFileNum, numFiles) {
       loadbar.complete();
-      mv.parser.parseRecords(data);
+      if (mv.loader.filenames()[curFileNum].indexOf("scrubbed") != -1) {
+        /* Scrubbed data! */
+        mv.parser.parseScrubbed(data);
+      } else {
+        /* Raw logs. */
+        mv.parser.parseRecords(data);
+      }
     }
     function postLoading() {
       filesbar.complete();
@@ -35,6 +41,7 @@ var mv = function(mv) {
       setTimeout(function() {
         loadbar.hide();
       }, 2000);
+      mv.parser.postProcessing();
       mv.heap.init();
       setTimeout(function() {
         filesbar.hide();

@@ -40,7 +40,7 @@ var mv = function(mv) {
         reader.onabort = function() { loader.onabort.apply(null, arguments) };
         reader.onloadstart = function() { loader.onloadstart.apply(null, arguments) };
         reader.onload = function(evt) {
-          each(reader.result);
+          each(reader.result, curfile, numfiles);
           ++curfile;
           if (curfile == numfiles) {
             after();

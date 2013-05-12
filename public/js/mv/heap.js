@@ -10,7 +10,6 @@ var mv = function(mv) {
       heap.cfdata = crossfilter(mv.parser.records);
       heap.all = heap.cfdata.groupAll().reduce(ea, es, ez);
       monoGroup("date", function(d) { return d3.time.hour.round(d.date); });
-      monoGroup("pc", function(d) { return d.pc; });
       monoGroup("map", function(d) { return d.map; }).reduce(ea, es, ez);
       monoGroup("blvl", function(d) { return d.pcstat ? d.pcstat.blvl : 0; });
       monoGroup("type", function(d) { return d.type; });

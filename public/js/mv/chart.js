@@ -13,9 +13,6 @@ var mv = function(mv) {
         .xUnits(d3.time.hours)
         .xAxisPadding(2)
         ;
-      mv.charts.pc = bar(monoGroup(wide(dc.barChart("#player-chart")), "pc"))
-        .x(d3.scale.linear().domain([mv.heap.pc.dim.bottom(1)[0].pc, mv.heap.pc.dim.top(1)[0].pc]).nice())
-        ;
       mv.charts.blvl = bar(monoGroup(med(dc.barChart("#blvl-chart")), "blvl"))
         .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl]))
         ;
