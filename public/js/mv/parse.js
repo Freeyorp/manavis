@@ -147,6 +147,7 @@ var mv = function(mv) {
     var pcData = mobData[pc] || (mobData[pc] = {});
     (pcData[wpn] += damage) || (pcData[wpn] = damage);
     (pcData.total += damage) || (pcData.total = damage);
+    return true;
   }
   function checkMobMobDmg(e) {
     var d = e.match(/^^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) MOB-TO-MOB-DMG FROM MOB(\d+) (\d+) TO MOB(\d+) (\d+) FOR (\d+)/);
@@ -164,6 +165,7 @@ var mv = function(mv) {
     var pcData = mobData[pc] || (mobData[pc] = {});
     (pcData[wpn] += damage) || (pcData[wpn] = damage);
     (pcData.total += damage) || (pcData.total = damage);
+    return true;
   }
   function checkMobDeath(e) {
     var d = e.match(/^(\d+\.\d+) MOB(\d+) DEAD/);

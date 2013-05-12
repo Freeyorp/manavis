@@ -59,6 +59,11 @@ var mv = function(mv) {
       delete users[d.id];
       updateUsersStatus();
     });
+    /*
+     * Remember the old renderlet
+     * FIXME: Find a more elegant way to do this
+     */
+    var f = dc.renderlet();
     dc.renderlet(function() {
       /* Hook a listener into dc's rendering routine. If it rerenders, broadcast the change. */
       if (netrendering) {
@@ -66,6 +71,8 @@ var mv = function(mv) {
         return;
       }
       socket.emit("filter", { filters: mv.charter.filters() });
+      /* Call the old renderlet */
+      f();
     });
   }
   function setOwnFilters(filters) {
