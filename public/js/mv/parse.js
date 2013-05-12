@@ -39,7 +39,7 @@ var mv = function(mv) {
     var spl = data.split(/\r?\n/);
     spl.forEach(function(e) {
       /* Check for each of the record types we're looking for. */
-      if (checkDmg(e) || checkStat(e)) {
+      if (checkDmg(e) || checkMobMobDmg(e) || checkStat(e)) {
         /* We have a record that has nothing to do with killed mobs, so no mob just died. */
         freeMob();
       } else {
@@ -132,7 +132,7 @@ var mv = function(mv) {
     return true;
   }
   function checkDmg(e) {
-    var d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) ([A-Z]+)DMG MOB(\d+) (\d+) FOR (\d+) WPN (\d+)/);
+    var d = e.match(/^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) ([A-Z]+)DMG MOB(\d+) (\d+) FOR (\d+) (?:WPN|BY) ([^ ]+)/);
     if (!d) {
       return false;
     }
@@ -140,8 +140,25 @@ var mv = function(mv) {
     var mobClass = mob.nameByServerID(d[8]);
     var target = parseInt(d[7]);
     var pc = parseInt(d[2]);
-    var wpn = item.nameByServerID(d[10]);
+    var wpn = d[6] == "SPELL" ? d[10] : item.nameByServerID(d[10]);
     var damage = parseInt(d[9]);
+    /* Update combat state */
+    var mobData = combat[target] || (combat[target] = { mobClass: mobClass });
+    var pcData = mobData[pc] || (mobData[pc] = {});
+    (pcData[wpn] += damage) || (pcData[wpn] = damage);
+    (pcData.total += damage) || (pcData.total = damage);
+  }
+  function checkMobMobDmg(e) {
+    var d = e.match(/^^(\d+\.\d+) PC(\d+) (\d+):(\d+),(\d+) MOB-TO-MOB-DMG FROM MOB(\d+) (\d+) TO MOB(\d+) (\d+) FOR (\d+)/);
+    if (!d) {
+      return false;
+    }
+    /* Parse out values */
+    var mobClass = mob.nameByServerID(d[9]);
+    var target = parseInt(d[8]);
+    var pc = parseInt(d[2]);
+    var wpn = mob.nameByServerID(d[7]);
+    var damage = parseInt(d[10]);
     /* Update combat state */
     var mobData = combat[target] || (combat[target] = { mobClass: mobClass });
     var pcData = mobData[pc] || (mobData[pc] = {});
