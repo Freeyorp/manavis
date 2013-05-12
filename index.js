@@ -15,7 +15,7 @@ app.configure(function () {
   app.use(cookieParser);
   app.use(express.session({ store: sessionStore }));
   app.use(app.router);
-  app.use(express.static(__dirname));
+  app.use(express.static(__dirname + "/public"));
 });
 
 var server = http.createServer(app)
@@ -88,10 +88,7 @@ sessionSockets.on('connection', function (err, socket, session) {
     });
   });
   function logAction(action, content) {
-    logger.info(session.nid
-              , action
-              , content
-    );
+    logger.info(session.nid, action, content);
   }
 });
 
