@@ -23,8 +23,9 @@ var mv = function(mv) {
         ;
       mv.charts.wpn = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
         ;
-      mv.charts.numAttackers = pie(monoGroup(dc.pieChart("#num-attackers-chart"), "numAttackers"))
-        .sort(function(d1, d2) { return d3.ascending(d1.key, d2.key); })
+      mv.charts.numAttackers = bar(monoGroup(thin(dc.barChart("#num-attackers-chart")), "numAttackers"))
+        .x(d3.scale.linear().domain([0, mv.heap.numAttackers.dim.top(1)[0].numAttackers]))
+        .elasticX(true)
         ;
       mv.charts.map = monoGroup(margined(wide(dc.bubbleChart("#map-chart"))), "map")
         .height(500)
