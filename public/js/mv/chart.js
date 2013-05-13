@@ -23,18 +23,6 @@ var mv = function(mv) {
         ;
       mv.charts.wpn = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
         ;
-      mv.charts.def = pie(monoGroup(dc.pieChart("#def-chart"), "def"))
-        .label(function(d) { return defLevelVerbose(d.data.key); })
-        .title(function(d) { return defLevelVerbose(d.data.key) + ": " + d.value; })
-        .colorAccessor(function(d) { return d.data.key; })
-        .colorCalculator(function(k) { switch(k) {
-          case 0: return "#fd350d";
-          case 1: return "#fdae6b";
-          case 2: return "#6baed6";
-          default: throw "Definition chart: Color access key out of range!";
-        }})
-        .filter(2)
-        ;
       mv.charts.map = monoGroup(margined(wide(dc.bubbleChart("#map-chart"))), "map")
         .height(500)
         .colorCalculator(d3.scale.category20c())
@@ -68,14 +56,6 @@ var mv = function(mv) {
         }
       }
       return r;
-    }
-    function defLevelVerbose(level) {
-      switch (level) {
-        case 0: return "Undefined";
-        case 1: return "Mixed";
-        case 2: return "Defined";
-        default: console.log(d, d.data); throw "Unknown definedness case (" + d.data.key + "); this shouldn't happen";
-      }
     }
     return charter;
   }();
