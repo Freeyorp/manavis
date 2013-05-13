@@ -62,6 +62,9 @@ sessionSockets.on('connection', function (err, socket, session) {
     socket.emit('users', { users: users });
     /* Set up various handlers for the new socket. */
     socket.on('nick', function (d) {
+      if (!(typeof(d) == "object" && nick in d)) {
+        return;
+      }
       /* TODO Collision checking? */
       users[session.nid].nick = session.nick = d.nick;
       session.save();
@@ -72,6 +75,9 @@ sessionSockets.on('connection', function (err, socket, session) {
       });
     });
     socket.on('filter', function(d) {
+      if (!(typeof(d) == "object" && filters in d)) {
+        return;
+      }
       users[session.nid].filters = d.filters;
       logAction("FILTER", d.filters);
       socket.broadcast.emit('filterset', {
