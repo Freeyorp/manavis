@@ -34,6 +34,10 @@ logger.format = function(level, date, message) {
 var count = 0;
 /* nid -> { nick, filters, following } */
 var users = {};
+/* nid -> socket */
+var sockets = {};
+/* FIXME: Workaround to prevent logout propagating during ghosting */
+var ghosting = false;
 
 sessionSockets.on('connection', function (err, socket, session) {
   /*
@@ -45,6 +49,13 @@ sessionSockets.on('connection', function (err, socket, session) {
     session.nid = session.nid || (++count);
     session.nick = session.nick || null;
     session.save();
+    if (session.nid in sockets) {
+      /* Ghost the old session */
+      ghosting = true;
+      sockets[session.nid].disconnect();
+      ghosting = false;
+    }
+    sockets[session.nid] = socket;
     /* New user! */
     logAction("CONNECT", socket.handshake.address.address);
     users[session.nid] = { nick: session.nick, filters: {} };
@@ -86,7 +97,12 @@ sessionSockets.on('connection', function (err, socket, session) {
       });
     });
     socket.on('disconnect', function() {
+      if (ghosting) {
+        logAction("GHOSTED");
+        return;
+      }
       logAction("DISCONNECT");
+      delete sockets[session.nid];
       delete users[session.nid];
       socket.broadcast.emit('logout', {
         id: session.nid
