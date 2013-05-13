@@ -1,3 +1,4 @@
+"use strict";
 var mv = function(mv) {
   mv.loader = function() {
     /* Set up handlers for file selector */

@@ -1,3 +1,4 @@
+"use strict";
 var mv = function(mv) {
   mv.socket = {
     connect: connect

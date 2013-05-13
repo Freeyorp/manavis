@@ -1,3 +1,4 @@
+"use strict";
 var mv = function(mv) {
   mv.init = function() {
     console.log("Initialising");

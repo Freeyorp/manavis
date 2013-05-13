@@ -1,3 +1,4 @@
+"use strict";
 function trellisChart(anchor, monoGroups) {
   /* attr -> {dim, group} key -> str amount, value -> { str, agi, vit, dex, int, luk } */
 
