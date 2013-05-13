@@ -121,7 +121,7 @@ h3 {
 
 /* Stat chart */
 
-#stat-chart svg g g.column .border-line {
+#stat-chart .border-line {
   fill: none;
   stroke: #ccc;
   opacity: .5;

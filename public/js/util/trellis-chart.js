@@ -1,11 +1,15 @@
 "use strict";
 function trellisChart(anchor, monoGroups) {
+  /*
+   * FIXME: There is a lot of hardcoding going on in here.
+   */
   /* attr -> {dim, group} key -> str amount, value -> { str, agi, vit, dex, int, luk } */
-
+  /* Array of all attribute names */
   var attrs = monoGroups.map(function(d) { return d.name; });
   var attrsIdByName = {};
   monoGroups.forEach(function(d, i) { attrsIdByName[d.name] = i; });
 
+  /* Parameters. FIXME: Tightly coupled magic numbers everywhere. */
   var cellWidth = 5;
   var radius = cellWidth / 2;
   var subChartLength = 57;
@@ -20,21 +24,82 @@ function trellisChart(anchor, monoGroups) {
   var _chart = function() {
     if (g.empty()) {
       /* Make stuff! */
-      var svg = anchor.append("svg");
-      g = svg
-        .append("g");
-      attrs.forEach(function(d, i) {
-        g
-          .append("text")
-          .attr("transform", function(d) { return "translate(0," + ((attrs.length - i) * subChartLength + 10 - subChartLength / 2) + ")"; })
-          .text(d)
-        ;
-        g
-          .append("text")
-          .attr("transform", function(d) { return "translate(" + (i * subChartLength + 25 + 22) + "," + (attrs.length * subChartLength + 18) + ")"; })
-          .text(d)
-        ;
-      })
+      var svg = anchor.append("svg").attr("height", 400);
+      /* Group of dimension labels. */
+      var dimLabelsG = svg
+        .append("g")
+        .attr("transform", "translate(" + (margin.left + 25 + 2) + "," + (margin.top) + ")")
+      ;
+      var dimLabels;
+      /* Subchart separators */
+      var sepOrigin = -cellWidth
+        , sepLineLen = subChartLength * attrs.length - subChartPadding
+      ;
+      dimLabels = dimLabelsG.selectAll("g.yAxisDimLabel")
+        .data(attrs)
+      ;
+      dimLabels.enter().append("g").attr("class", "yAxisDimLabel")
+        .attr("transform", function(d, i) { return "translate(0," + (attrs.length - i) * subChartLength + ")"; })
+        .each(function(d, i) {
+          var t = d3.select(this);
+          t
+            .append("text")
+            .attr("transform", "translate(-25," + (-subChartUnpaddedLength / 2) + ")")
+            .text(d)
+          ;
+          /* Top subchart separators */
+          t
+            .append("line")
+            .attr("x1", sepOrigin)
+            .attr("x2", sepOrigin + sepLineLen)
+            .attr("y1", sepOrigin)
+            .attr("y2", sepOrigin)
+            .attr("class", "border-line")
+          ;
+          /* Bottom subchart separators */
+          t
+            .append("line")
+            .attr("x1", sepOrigin)
+            .attr("x2", sepOrigin + sepLineLen)
+            .attr("y1", sepOrigin - subChartUnpaddedLength)
+            .attr("y2", sepOrigin - subChartUnpaddedLength)
+            .attr("class", "border-line")
+          ;
+        })
+      ;
+      dimLabels = dimLabelsG.selectAll("g.xAxisDimLabel")
+        .data(attrs)
+      ;
+      dimLabels.enter().append("g").attr("class", "xAxisDimLabel")
+        .attr("transform", function(d, i) { return "translate(" + (i * subChartLength) + "," + (attrs.length * subChartLength) + ")"; })
+        .each(function(d, i) {
+          var t = d3.select(this);
+          t
+            .append("text")
+            .attr("transform", "translate("+ (subChartUnpaddedLength / 2 - 12) + ",8)")
+            .text(d)
+          ;
+          /* Left subchart separators */
+          t
+            .append("line")
+            .attr("x1", sepOrigin)
+            .attr("x2", sepOrigin)
+            .attr("y1", sepOrigin)
+            .attr("y2", sepOrigin - sepLineLen)
+            .attr("class", "border-line")
+          ;
+          /* Right subchart separators */
+          t
+            .append("line")
+            .attr("x1", sepOrigin + subChartUnpaddedLength)
+            .attr("x2", sepOrigin + subChartUnpaddedLength)
+            .attr("y1", sepOrigin)
+            .attr("y2", sepOrigin - sepLineLen)
+            .attr("class", "border-line")
+          ;
+        })
+      ;
+      /* Group of subcharts. */
       g = svg
         .append("g")
           .attr("transform", "translate(" + (margin.left + 25) + "," + (margin.top) + ")");
@@ -50,22 +115,6 @@ function trellisChart(anchor, monoGroups) {
       .enter().append("g")
         .attr("class", "column")
         .attr("transform", function(d) { return "translate(" + (attrsIdByName[d.name] * subChartLength) + ",0)"; })
-      ;
-    colE
-      .append("line")
-        .attr("x1", -cellWidth)
-        .attr("x2", -cellWidth)
-        .attr("y1", -cellWidth)
-        .attr("y2", subChartLength * attrs.length - subChartPadding)
-        .attr("class", "border-line")
-      ;
-    colE
-      .append("line")
-        .attr("x1", subChartUnpaddedLength)
-        .attr("x2", subChartUnpaddedLength)
-        .attr("y1", -cellWidth)
-        .attr("y2", subChartLength * attrs.length - subChartPadding)
-        .attr("class", "border-line")
       ;
     /* Each stat has an array for its value. Group these to find the x position. */
     /*
