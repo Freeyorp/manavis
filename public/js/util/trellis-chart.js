@@ -9,13 +9,19 @@ function trellisChart(anchor, monoGroups) {
   var attrsIdByName = {};
   monoGroups.forEach(function(d, i) { attrsIdByName[d.name] = i; });
 
-  /* Parameters. FIXME: Tightly coupled magic numbers everywhere. */
+  /* Parameters. FIXME: Tightly coupled. */
   var cellWidth = 5;
   var radius = cellWidth / 2;
   var subChartLength = 57;
   var subChartUnpaddedLength = 50;
   var subChartPadding = 7;
+  var chartLen = subChartLength * attrs.length - subChartPadding;
+  /* Padding in pixels to pad the left side of the chart with to make room for the labels. */
+  var labelPadding = 25;
   var filler = d3.scale.log().domain([1, 2]).range([0, 255]);
+  var domainMin = 0, domainMax = 100;
+  var attrGroups = 10;
+  var axisLabelHeight = 9;
 
   var margin = {top: 10, right: 10, bottom: 20, left: 10};
   var anchor = d3.select(anchor);
@@ -28,81 +34,110 @@ function trellisChart(anchor, monoGroups) {
       /* Group of dimension labels. */
       var dimLabelsG = svg
         .append("g")
-        .attr("transform", "translate(" + (margin.left + 25 + 2) + "," + (margin.top) + ")")
+        .attr("transform", "translate(" + (margin.left + labelPadding) + "," + (margin.top) + ")")
       ;
       var dimLabels;
-      /* Subchart separators */
-      var sepOrigin = -cellWidth
-        , sepLineLen = subChartLength * attrs.length - subChartPadding
-      ;
-      dimLabels = dimLabelsG.selectAll("g.yAxisDimLabel")
+      dimLabels = dimLabelsG.selectAll("g.y-axis-dim-label")
         .data(attrs)
       ;
-      dimLabels.enter().append("g").attr("class", "yAxisDimLabel")
-        .attr("transform", function(d, i) { return "translate(0," + (attrs.length - i) * subChartLength + ")"; })
+      /* Each label is shifted downwards by its distance from the origin. */
+      /* Since the origin (0,0) in svg differs from the origin (0,0) in our charts, we must go backwards down the y axis here. */
+      /* One instance of padding must be removed from this offset to get the correct distance, since this is working from the back. */
+      dimLabels.enter().append("g").attr("class", "y-axis-dim-label")
+        .attr("transform", function(d, i) { return "translate(0," + ((attrs.length - i) * subChartLength - subChartPadding) + ")"; })
         .each(function(d, i) {
           var t = d3.select(this);
+          /* The -8 here is an insignificant offset to distinguish the dimension label from the domain labels. */
           t
             .append("text")
-            .attr("transform", "translate(-25," + (-subChartUnpaddedLength / 2) + ")")
+            .attr("transform", "translate(-8," + (-subChartUnpaddedLength / 2 + axisLabelHeight / 2) + ")")
+            .attr("class", "dim-label")
             .text(d)
           ;
           /* Top subchart separators */
           t
             .append("line")
-            .attr("x1", sepOrigin)
-            .attr("x2", sepOrigin + sepLineLen)
-            .attr("y1", sepOrigin)
-            .attr("y2", sepOrigin)
+            .attr("x1", 0)
+            .attr("x2", chartLen)
+            .attr("y1", 0)
+            .attr("y2", 0)
             .attr("class", "border-line")
           ;
           /* Bottom subchart separators */
           t
             .append("line")
-            .attr("x1", sepOrigin)
-            .attr("x2", sepOrigin + sepLineLen)
-            .attr("y1", sepOrigin - subChartUnpaddedLength)
-            .attr("y2", sepOrigin - subChartUnpaddedLength)
+            .attr("x1", 0)
+            .attr("x2", chartLen)
+            .attr("y1", -subChartUnpaddedLength)
+            .attr("y2", -subChartUnpaddedLength)
             .attr("class", "border-line")
+          ;
+          /* Y Domain markers */
+          t
+            .append("text")
+            .attr("transform", "translate(0," + (-subChartUnpaddedLength + axisLabelHeight) + ")")
+            .text(domainMax)
+          ;
+          t
+            .append("text")
+            .attr("transform", "translate(0,0)")
+            .text(domainMin)
           ;
         })
       ;
-      dimLabels = dimLabelsG.selectAll("g.xAxisDimLabel")
+      dimLabels = dimLabelsG.selectAll("g.x-axis-dim-label")
         .data(attrs)
       ;
-      dimLabels.enter().append("g").attr("class", "xAxisDimLabel")
-        .attr("transform", function(d, i) { return "translate(" + (i * subChartLength) + "," + (attrs.length * subChartLength) + ")"; })
+      dimLabels.enter().append("g").attr("class", "x-axis-dim-label")
+        .attr("transform", function(d, i) { return "translate(" + (i * subChartLength) + "," + chartLen + ")"; })
         .each(function(d, i) {
           var t = d3.select(this);
+          /* The dimension label is placed at a y level directly after the domain labels. */
           t
             .append("text")
-            .attr("transform", "translate("+ (subChartUnpaddedLength / 2 - 12) + ",8)")
+            .attr("transform", "translate("+ (subChartUnpaddedLength / 2) + "," + (axisLabelHeight * 2) + ")")
+            .attr("class", "dim-label")
             .text(d)
           ;
           /* Left subchart separators */
           t
             .append("line")
-            .attr("x1", sepOrigin)
-            .attr("x2", sepOrigin)
-            .attr("y1", sepOrigin)
-            .attr("y2", sepOrigin - sepLineLen)
+            .attr("x1", 0)
+            .attr("x2", 0)
+            .attr("y1", 0)
+            .attr("y2", -chartLen)
             .attr("class", "border-line")
           ;
           /* Right subchart separators */
           t
             .append("line")
-            .attr("x1", sepOrigin + subChartUnpaddedLength)
-            .attr("x2", sepOrigin + subChartUnpaddedLength)
-            .attr("y1", sepOrigin)
-            .attr("y2", sepOrigin - sepLineLen)
+            .attr("x1", subChartUnpaddedLength)
+            .attr("x2", subChartUnpaddedLength)
+            .attr("y1", 0)
+            .attr("y2", -chartLen)
             .attr("class", "border-line")
+          ;
+          /* X Domain markers */
+          t
+            .append("text")
+            .attr("transform", "translate(" + subChartUnpaddedLength + "," + axisLabelHeight + ")")
+            .style("text-anchor", "end")
+            .text(domainMax)
+          ;
+          t
+            .append("text")
+            .attr("transform", "translate(0," + axisLabelHeight + ")")
+            .style("text-anchor", "start")
+            .text(domainMin)
           ;
         })
       ;
       /* Group of subcharts. */
+      /* Adjust the translation by the radius of each circle - the origin of each circle is the middle. */
+      /* This makes their starting position consistent with the rest of the graph. */
       g = svg
         .append("g")
-          .attr("transform", "translate(" + (margin.left + 25) + "," + (margin.top) + ")");
+          .attr("transform", "translate(" + (margin.left + labelPadding + radius) + "," + (margin.top - radius) + ")");
     }
     /* Group first into columns for each stat. We have one column for each of the stat monoGroups. */
     /*
@@ -168,7 +203,7 @@ function trellisChart(anchor, monoGroups) {
         .attr("fill", function(d) {
           return d ? d3.rgb(255 - filler(d + 1), 255 - filler(d + 1) / 2, 255 - filler(d + 1) / 3) : "white";
         })
-        .attr("transform", function(d, i) { return "translate(0," + ((10-i) * cellWidth) + ")"; })
+        .attr("transform", function(d, i) { return "translate(0," + ((attrGroups-i) * cellWidth) + ")"; })
       ;
     cells
       .exit()

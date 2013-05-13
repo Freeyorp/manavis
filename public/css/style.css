@@ -128,6 +128,22 @@ h3 {
   shape-rendering: crispEdges;
 }
 
+#stat-chart text {
+  font: 10px sans-serif;
+}
+
+#stat-chart .x-axis-dim-label text {
+  text-anchor: middle;
+}
+#stat-chart .y-axis-dim-label text {
+  text-anchor: end;
+}
+
+#stat-chart text.dim-label {
+  font: 12px sans-serif;
+  font-weight: bold;
+}
+
 /* User list */
 
 #users-status {
