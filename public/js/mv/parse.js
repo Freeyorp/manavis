@@ -208,7 +208,7 @@ var mv = function(mv) {
   }
   function createBlobLink() {
     /* Make the scrubbed data available for download as a blob. */
-    var blob = new Blob(JSON.stringify(parser.records));
+    var blob = new Blob([JSON.stringify(mv.parser.records)]);
     var a = d3.select('body').append('a');
     a
       .text("Scrubbed records")
