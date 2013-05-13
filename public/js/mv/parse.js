@@ -25,7 +25,7 @@ var mv = function(mv) {
    */
   var killedMobID = 0;
   /*
-   * mob ID -> { mobClass, player IDs -> { total, weapon names -> { sum damage } } }
+   * mob ID -> { mobClass, numAttackers, player IDs -> { total, weapon names -> { sum damage } } }
    */
   var combat = {};
   function freeMob() {
@@ -73,7 +73,8 @@ var mv = function(mv) {
       pcstat: pcstat[d[2]],
       target: "UNKNOWN",
       dmg: 0,
-      wpn: "UNKNOWN"
+      wpn: "UNKNOWN",
+      numAttackers: 0
     };
     if (pcstat[d[2]] == undefined && (!fullyDefinedCutoff || ts > fullyDefinedCutoff)) {
       /* Undefined, and newer than any existing definedness cutoff */
@@ -83,6 +84,7 @@ var mv = function(mv) {
       if (killedMobID && killedMobID in combat && rec.pc in combat[killedMobID]) {
         var mob = combat[killedMobID];
         rec.target = mob.mobClass;
+        rec.numAttackers = mob.numAttackers || 0;
         var weapons = mob[rec.pc];
         /* We have the needed information. */
         rec.dmg = weapons.total;
@@ -145,7 +147,13 @@ var mv = function(mv) {
     var damage = parseInt(d[9]);
     /* Update combat state */
     var mobData = combat[target] || (combat[target] = { mobClass: mobClass });
-    var pcData = mobData[pc] || (mobData[pc] = {});
+    var pcData;
+    if (pc in mobData) {
+      pcData = mobData[pc];
+    } else {
+      (++mobData.numAttackers) || (mobData.numAttackers = 1);
+      pcData = mobData[pc] = {};
+    }
     (pcData[wpn] += damage) || (pcData[wpn] = damage);
     (pcData.total += damage) || (pcData.total = damage);
     return true;

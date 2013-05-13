@@ -16,6 +16,7 @@ var mv = function(mv) {
       monoGroup("type", function(d) { return d.type; });
       monoGroup("target", function(d) { return d.target; });
       monoGroup("wpn", function(d) { return d.wpn; });
+      monoGroup("numAttackers", function(d) { return d.numAttackers; });
       function sa(p, d) {
         if (!d.pcstat) return p;
         p.str[d.pcstat.str]++ || (p.str[d.pcstat.str] = 1);
