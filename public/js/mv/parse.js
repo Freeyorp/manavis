@@ -28,6 +28,19 @@ var mv = function(mv) {
    * mob ID -> { mobClass, numAttackers, player IDs -> { total, weapon names -> { sum damage } } }
    */
   var combat = {};
+  function combatPerformed(mobClass, target, pc, wpn, damage) {
+      /* Update combat state */
+    var mobData = combat[target] || (combat[target] = { mobClass: mobClass });
+    var pcData;
+    if (pc in mobData) {
+      pcData = mobData[pc];
+    } else {
+      (++mobData.numAttackers) || (mobData.numAttackers = 1);
+      pcData = mobData[pc] = {};
+    }
+    (pcData[wpn] += damage) || (pcData[wpn] = damage);
+    (pcData.total += damage) || (pcData.total = damage);
+  }
   function freeMob() {
     /* We no longer need detailed information on the mob's combat. */
     if (!killedMobID) {
@@ -145,17 +158,7 @@ var mv = function(mv) {
     var pc = parseInt(d[2]);
     var wpn = d[6] == "SPELL" ? d[10] : item.nameByServerID(d[10]);
     var damage = parseInt(d[9]);
-    /* Update combat state */
-    var mobData = combat[target] || (combat[target] = { mobClass: mobClass });
-    var pcData;
-    if (pc in mobData) {
-      pcData = mobData[pc];
-    } else {
-      (++mobData.numAttackers) || (mobData.numAttackers = 1);
-      pcData = mobData[pc] = {};
-    }
-    (pcData[wpn] += damage) || (pcData[wpn] = damage);
-    (pcData.total += damage) || (pcData.total = damage);
+    combatPerformed(mobClass, target, pc, wpn, damage);
     return true;
   }
   function checkMobMobDmg(e) {
@@ -170,10 +173,7 @@ var mv = function(mv) {
     var wpn = mob.nameByServerID(d[7]);
     var damage = parseInt(d[10]);
     /* Update combat state */
-    var mobData = combat[target] || (combat[target] = { mobClass: mobClass });
-    var pcData = mobData[pc] || (mobData[pc] = {});
-    (pcData[wpn] += damage) || (pcData[wpn] = damage);
-    (pcData.total += damage) || (pcData.total = damage);
+    combatPerformed(mobClass, target, pc, wpn, damage);
     return true;
   }
   function checkMobDeath(e) {

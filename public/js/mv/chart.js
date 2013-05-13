@@ -24,7 +24,7 @@ var mv = function(mv) {
       mv.charts.wpn = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
         ;
       mv.charts.numAttackers = pie(monoGroup(dc.pieChart("#num-attackers-chart"), "numAttackers"))
-        .sort(function(d1, d2) { return d3.descending(d1.key, d2.key); })
+        .sort(function(d1, d2) { return d3.ascending(d1.key, d2.key); })
         ;
       mv.charts.map = monoGroup(margined(wide(dc.bubbleChart("#map-chart"))), "map")
         .height(500)
