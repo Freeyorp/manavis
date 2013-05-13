@@ -1,5 +1,7 @@
 /* Ensure sane defaults */
-
+html, body, #vis, #main, .side {
+  height: 100%;
+}
 body {
   padding: 0;
   margin: 0;
@@ -8,6 +10,7 @@ body {
 /* Top-level layout */
 .side {
   float: right;
+  border-left: 1px solid lightgray;
 }
 #main {
   overflow: hidden;
@@ -51,6 +54,16 @@ body {
 
 #main, .side {
   font-size: smaller;
+}
+
+.col1 {
+  background-color: #fdf9ff;
+}
+.col2 {
+  background-color: #fdfdff;
+}
+.col3 {
+  background-color: #fffdfb;
 }
 
 /* Titles */
