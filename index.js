@@ -74,7 +74,7 @@ sessionSockets.on('connection', function (err, socket, session) {
     socket.emit('users', { users: users });
     /* Set up various handlers for the new socket. */
     socket.on('nick', function (d) {
-      if (!(typeof(d) == "object" && nick in d)) {
+      if (!(typeof(d) == "object" && "nick" in d)) {
         return;
       }
       /* TODO Collision checking? */
@@ -87,7 +87,7 @@ sessionSockets.on('connection', function (err, socket, session) {
       });
     });
     socket.on('filter', function(d) {
-      if (!(typeof(d) == "object" && filters in d)) {
+      if (!(typeof(d) == "object" && "filters" in d)) {
         return;
       }
       users[session.nid].filters = d.filters;
