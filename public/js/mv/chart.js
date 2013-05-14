@@ -57,6 +57,9 @@ var mv = function(mv) {
           if (mv.charts.type.filter() != "KILLXP") {
             /* Hide killxp charts */
             killxpCharts.style("opacity", "0");
+            mv.charts.target.filterAll();
+            mv.charts.wpn.filterAll();
+            mv.charts.numAttackers.filterAll();
             killxpShown = false;
           }
         } else {
