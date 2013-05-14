@@ -15,7 +15,7 @@ var mv = function(mv) {
         .xAxisPadding(2)
         ;
       mv.charts.blvl = bar(monoGroup(med(dc.barChart("#blvl-chart")), "blvl"))
-        .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl]))
+        .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl + 0.5]))
         ;
       mv.charts.type = pie(monoGroup(dc.pieChart("#type-chart"), "type"))
         ;
@@ -24,7 +24,7 @@ var mv = function(mv) {
       mv.charts.wpn = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
         ;
       mv.charts.numAttackers = bar(monoGroup(thin(dc.barChart("#num-attackers-chart")), "numAttackers"))
-        .x(d3.scale.linear().domain([0, mv.heap.numAttackers.dim.top(1)[0].numAttackers]))
+        .x(d3.scale.linear().domain([0, mv.heap.numAttackers.dim.top(1)[0].numAttackers + 0.5]))
         .elasticX(true)
         ;
       mv.charts.map = monoGroup(margined(wide(dc.bubbleChart("#map-chart"))), "map")
