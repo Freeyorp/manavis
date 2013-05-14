@@ -9,9 +9,7 @@ To run in offline mode, place the public/ folder in a location served by a web s
 While offline, you can still analyse everything as you would normally.
 
 To run in online mode, after running npm install for the first time, run npm start from the project root, and connect to localhost:3000.
-In online mode, active filters are broadcast to other users, similar to multiplayer notepad or etherpad.
-Currently, all changes are applied from everyone in online mode.
-This can be inconvenient, and should be changed in the near future.
+In online mode, active filters are broadcast to other users in the same channel, similar to multiplayer notepad or etherpad.
 You can still operate offline by unselecting the checkbox at the loading screen.
 
 Significant amounts of processing in javascript are required. It is recommended you use recent versions of a browser such as chromium.
