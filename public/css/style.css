@@ -151,9 +151,20 @@ h3 {
   border-left: 1px black solid;
   border-bottom: 1px black solid;
   display: none;
+  height: 200px;
+  overflow-y: scroll;
 }
 
-#users-status {
+#users-status .channel {
+  border: 1px gray solid;
+  margin: 0 2em;
+}
+
+#users-status a {
+  margin-left: 1em;
+}
+
+#users-status ul {
   padding-left: 20px;
 }
 

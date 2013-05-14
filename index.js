@@ -33,12 +33,16 @@ logger.format = function(level, date, message) {
 
 /* Number of sessions we've seen. */
 var count = 0;
-/* nid -> { nick, filters, following } */
+/* nid -> { nick, filters, channel } */
 var users = {};
 /* nid -> socket */
 var sockets = {};
 /* FIXME: Workaround to prevent logout propagating during ghosting */
 var ghosting = false;
+/* Auto-incrementing room count */
+var channelCount = 0;
+/* Channel ID -> { usernum, filters } */
+var channels = {};
 
 sessionSockets.on('connection', function (err, socket, session) {
   /*
@@ -86,13 +90,73 @@ sessionSockets.on('connection', function (err, socket, session) {
         nick: d.nick
       });
     });
+    socket.on('join', function(d) {
+      var channel;
+      if (d != null) {
+        if (!(typeof(d) == "number" && d <= channelCount)) {
+          return;
+        }
+        /* Join an existing channel */
+        channel = d;
+      } else {
+        /* Automagically create a new channel */
+        channel = ++channelCount;
+      }
+      logAction("JOIN", users[session.nid].channel);
+      if ("channel" in users[session.nid]) {
+        /* Leave any channel we're in */
+        socket.leave(users[session.nid].channel);
+      }
+      /* Inform socket.io about the channel join */
+      socket.join(channel);
+      /* Let everyone know about the channel join */
+      users[session.nid].channel = channel;
+      io.sockets.emit('join', {
+        id: session.nid,
+        channel: channel
+      });
+      /* Update the channel information */
+      if (channel in channels) {
+        /* This channel already exists. Inform the joining user of the current filters. */
+        socket.emit('filterset', {
+          id: 0, /* Server */
+          filters: channels[channel].filters
+        });
+        ++channels[channel].usernum;
+      } else {
+        /* This channel didn't already exist, so create it and set the filters. */
+        channels[channel] = {
+          usernum: 1,
+          filters: users[session.nid].filters
+        };
+      }
+    });
+    socket.on('part', function() {
+      if (!users[session.nid].channel) {
+        return;
+      }
+      logAction("PART");
+      socket.leave(users[session.nid].channel);
+      if (!--channels[users[session.nid].channel].usernum) {
+        delete channels[users[session.nid].channel];
+      }
+      delete users[session.nid].channel;
+      io.sockets.emit('part', {
+        id: session.nid
+      });
+    });
     socket.on('filter', function(d) {
       if (!(typeof(d) == "object" && "filters" in d)) {
         return;
       }
       users[session.nid].filters = d.filters;
       logAction("FILTER", d.filters);
-      socket.broadcast.emit('filterset', {
+      var channel = users[session.nid].channel;
+      if (!channel) {
+        return;
+      }
+      channels[channel].filters = d.filters;
+      socket.broadcast.to(channel).emit('filterset', {
         id: session.nid,
         filters: d.filters
       });
@@ -111,7 +175,11 @@ sessionSockets.on('connection', function (err, socket, session) {
     });
   });
   function logAction(action, content) {
-    logger.info(session.nid, action, content);
+    if (arguments.length > 1) {
+      logger.info(session.nid, action, content);
+    } else {
+      logger.info(session.nid, action);
+    }
   }
 });
 

@@ -218,7 +218,6 @@ var mv = function(mv) {
   }
   function parseScrubbed(scrubbedRecords) {
     scrubbedRecords = JSON.parse(scrubbedRecords);
-    console.log(scrubbedRecords, scrubbedRecords.length);
     /*
      * The work is mostly all done for us. Just scan through to see if there
      * are any undefined records, and update the pointer if so.
@@ -236,7 +235,7 @@ var mv = function(mv) {
       }
     }
     /* It's simple when everything's already been done. */
-    parser.records = parser.records.concat(scrubbedRecords);
+    mv.parser.records = mv.parser.records.concat(scrubbedRecords);
   }
   return mv;
 }(mv || {});

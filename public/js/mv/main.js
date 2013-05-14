@@ -58,7 +58,7 @@ var mv = function(mv) {
         mv.charter.init();
         console.log(document.getElementById("connect-option").checked);
         if (document.getElementById("connect-option").checked) {
-          mv.socket.connect();
+          mv.connect.connect();
         }
       }, 2000);
     }
