@@ -59,6 +59,7 @@
       <p>Manavis will need records on your local file system. These files can be quite large, so the browser's local storage isn't sufficient. :)</p>
       <p>Both raw server logs (.log) and scrubbed datasets (.scrubbed) will work fine. If using the latter, make sure it has .scrubbed in the file name!</p>
       <p>You can load any number of files at once.</p>
+      <p>Please note that this is very js intensive. The tab may briefly lock up as it loads everything.</p>
       <input type="file" id="input" name="records[]" multiple />
       <output id="list"></output>
       <div id="filesbar" class="progressbar fader">
