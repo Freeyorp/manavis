@@ -147,6 +147,16 @@ h3 {
 
 /* User list */
 
+#connection-warning {
+  display: none;
+  position: absolute;
+  border: 2px black solid;
+  background: #fccccc;
+  top: 0;
+  right: 0;
+  padding: 1em;
+}
+
 #connect-status {
   border-left: 1px black solid;
   border-bottom: 1px black solid;

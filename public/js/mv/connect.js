@@ -17,8 +17,15 @@ var mv = function(mv) {
   var socket;
   function connect() {
     socket = io.connect('http://localhost:3000');
-    socket.on("connect", function() { console.log("CONNECT", arguments); });
-    socket.on("disconnect", function() { console.log("DISCONNECT", arguments); });
+    /* These are still useful to troubleshoot */
+    socket.on("connect", function() {
+      console.log("CONNECT", arguments);
+    });
+    socket.on("disconnect", function() {
+      console.log("DISCONNECT", arguments);
+      d3.select("#connection-warning").style("display", "block");
+    });
+    /* We're evidently operating online, so show the status */
     d3.select("#connect-status").style("display", "block");
     socket.emit('login');
     /* Tell the server our starting filters */
@@ -169,7 +176,6 @@ var mv = function(mv) {
         unchannelled.push(users[uid]);
       }
     }
-    console.log("Channels:", groups, "Users without channels:", unchannelled);
     groups.push(unchannelled);
         var createpart = usersStatus.select(".createpart");
     /* Link to part a channel we're in, or create a channel if we're not in one */
@@ -209,7 +215,6 @@ var mv = function(mv) {
          * Feel free to FIXME!
          */
         if (i != groups.length - 1) {
-          console.log("Group is a channel", i, groups.length);
           group
             .attr("class", "group channel")
           ;
@@ -228,7 +233,6 @@ var mv = function(mv) {
             join.style("display", "inline");
           }
         } else {
-          console.log("Group is not a channel", i, groups.length);
           var join = group.select(".join");
           group
             .attr("class", "group")
@@ -247,13 +251,11 @@ var mv = function(mv) {
         userlist
           .each(function(d,i) {
             var elm = d3.select(this);
-            console.log("Userlist para appending", d,i);
             var name = elm.select(".name");
             var nick = d.nick == null ? "Anonymous User " + d.id : d.nick;
             if (d.id == id) {
               /* This is us! We can edit our name. */
               if (name.empty()) {
-                console.log("Found our entry. id:", id, "datum", d);
                 name = elm.append("input").attr("class", "name")
                   .attr("type", "text")
                   .attr("placeholder", "Enter name here")

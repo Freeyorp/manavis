@@ -1,7 +1,6 @@
 "use strict";
 var mv = function(mv) {
   mv.init = function() {
-    console.log("Initialising");
     var loadbar = progress('loadbar');
     var filesbar = progress('filesbar');
     var lbase = loadbar.label;
@@ -56,7 +55,6 @@ var mv = function(mv) {
           .style("opacity", 1)
           ;
         mv.charter.init();
-        console.log(document.getElementById("connect-option").checked);
         if (document.getElementById("connect-option").checked) {
           mv.connect.connect();
         }
