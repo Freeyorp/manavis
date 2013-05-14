@@ -16,7 +16,7 @@ var mv = function(mv) {
   /* io.socket's socket */
   var socket;
   function connect() {
-    socket = io.connect('http://localhost:3000');
+    socket = io.connect();
     /* These are still useful to troubleshoot */
     socket.on("connect", function() {
       console.log("CONNECT", arguments);
@@ -27,7 +27,6 @@ var mv = function(mv) {
     });
     /* We're evidently operating online, so show the status */
     d3.select("#connect-status").style("display", "block");
-    socket.emit('login');
     /* Tell the server our starting filters */
     socket.emit("filter", { filters: mv.charter.filters() });
     /*
