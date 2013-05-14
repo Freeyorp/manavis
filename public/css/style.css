@@ -168,6 +168,13 @@ h3 {
   list-style: none;
 }
 
+/* Charts */
+
+.dc-chart, .mv-chart {
+  border-bottom: 1px #eee solid;
+  float: left;
+}
+
 /* Utility */
 .fader {
   -moz-transition: opacity 1s linear;

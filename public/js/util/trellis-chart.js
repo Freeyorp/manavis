@@ -30,7 +30,7 @@ function trellisChart(anchor, monoGroups) {
   var _chart = function() {
     if (g.empty()) {
       /* Make stuff! */
-      var svg = anchor.append("svg").attr("height", 400);
+      var svg = anchor.append("svg").attr("height", 400).attr("class", "mv-chart");
       /* Group of dimension labels. */
       var dimLabelsG = svg
         .append("g")
