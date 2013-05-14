@@ -48,7 +48,25 @@ var mv = function(mv) {
         .renderTitle(true)
         ;
       mv.charts.stats = trellisChart("#stat-chart", ["str", "agi", "vit", "dex", "int", "luk"].map(function(d) { mv.heap[d].name = d; return mv.heap[d]; }));
-      dc.renderlet(function() { mv.charts.stats(); });
+      mv.charts.type.filter("KILLXP");
+      var killxpShown = true;
+      var killxpCharts = d3.select("#killxp-charts");
+      dc.renderlet(function() {
+        mv.charts.stats();
+        if (killxpShown) {
+          if (mv.charts.type.filter() != "KILLXP") {
+            /* Hide killxp charts */
+            killxpCharts.style("opacity", "0");
+            killxpShown = false;
+          }
+        } else {
+          if (mv.charts.type.filter() == "KILLXP") {
+            /* Show killxp charts */
+            killxpCharts.style("opacity", "1");
+            killxpShown = true;
+          }
+        }
+      });
       dc.renderAll();
     }
     charter.filters = function() {
@@ -105,7 +123,8 @@ var mv = function(mv) {
   }
   function pie(chart) {
     return thin(chart)
-      .radius(90)
+      .radius(80)
+      .height(165)
       .colorCalculator(d3.scale.category20c())
       ;
   }
