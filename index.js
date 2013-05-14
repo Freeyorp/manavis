@@ -28,7 +28,10 @@ var server = http.createServer(app)
 
 /* Only one level is logged, and numerical timestamps are easier to compare. */
 logger.format = function(level, date, message) {
-  return (+date) + ":" + message;
+  return JSON.stringify({
+    date: +date,
+    data: JSON.parse(message) /* TODO: Get rid of encoding/decoding hack (write own logger?) */
+  });
 }
 
 /* Number of sessions we've seen. */
@@ -44,6 +47,8 @@ var channelCount = 0;
 /* Channel ID -> { usernum, filters } */
 var channels = {};
 
+var logServerAction = entityLogger(0);
+
 sessionSockets.on('connection', function (err, socket, session) {
   /*
    * Don't do anything until they send a login message.
@@ -51,6 +56,7 @@ sessionSockets.on('connection', function (err, socket, session) {
    */
   socket.on('login', function() {
     /* Someone new connected. Restore or initialise their session data. */
+    var logAction = entityLogger(session.nid);
     session.nid = session.nid || (++count);
     session.nick = session.nick || null;
     session.save();
@@ -62,7 +68,7 @@ sessionSockets.on('connection', function (err, socket, session) {
     }
     sockets[session.nid] = socket;
     /* New user! */
-    logAction("CONNECT", socket.handshake.address.address);
+    logAction("CONNECT", { "ip": socket.handshake.address.address, "proxied-ip": socket.handshake.headers['x-forwarded-for'] });
     users[session.nid] = { nick: session.nick, filters: {} };
     /* Let them know of their data. */
     socket.emit('selflogin', {
@@ -174,14 +180,20 @@ sessionSockets.on('connection', function (err, socket, session) {
       });
     });
   });
-  function logAction(action, content) {
-    if (arguments.length > 1) {
-      logger.info(session.nid, action, content);
-    } else {
-      logger.info(session.nid, action);
-    }
-  }
 });
 
-logger.info(0, "STARTUP");
+function entityLogger(id) {
+  return function(action, content) {
+    var message = {
+      user:id,
+      action:action
+    };
+    if (arguments.length > 1) {
+      message.content = content;
+    }
+    logger.info(JSON.stringify(message));
+  }
+}
+
+logServerAction(0, "STARTUP");
 server.listen(3000);
