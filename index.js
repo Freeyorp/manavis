@@ -59,8 +59,8 @@ sessionSockets.on('connection', function (err, socket, session) {
    * Later versions might also check a protocol version here.
    */
   /* Someone new connected. Restore or initialise their session data. */
-  var logAction = entityLogger(session.nid);
   session.nid = session.nid || (++count);
+  var logAction = entityLogger(session.nid);
   session.nick = session.nick || null;
   session.save();
   if (session.nid in sockets) {
