@@ -72,7 +72,8 @@ svg {
 
 /* Titles */
 h3 {
-  margin: 0.3em 0.8em;
+  margin: 0;
+  padding: 0.3em 0.8em;
 }
 
 /* Loadinfo panel */
@@ -145,6 +146,12 @@ h3 {
 }
 
 /* User list */
+
+#connect-status {
+  border-left: 1px black solid;
+  border-bottom: 1px black solid;
+  display: none;
+}
 
 #users-status {
   padding-left: 20px;

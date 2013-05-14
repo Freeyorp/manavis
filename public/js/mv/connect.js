@@ -17,6 +17,7 @@ var mv = function(mv) {
     socket = io.connect('http://localhost:3000');
     socket.on("connect", function() { console.log("CONNECT", arguments); });
     socket.on("disconnect", function() { console.log("DISCONNECT", arguments); });
+    d3.select("#connect-status").style("display", "block");
     socket.emit('login');
     /*
      * Protocol:
