@@ -52,6 +52,7 @@ var logServerAction = entityLogger(0);
 sessionSockets.on('connection', function (err, socket, session) {
   if (!session) {
     socket.disconnect();
+    return;
   }
   /*
    * Don't do anything until they send a login message.
