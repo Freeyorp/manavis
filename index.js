@@ -50,6 +50,9 @@ var channels = {};
 var logServerAction = entityLogger(0);
 
 sessionSockets.on('connection', function (err, socket, session) {
+  if (!session) {
+    socket.disconnect();
+  }
   /*
    * Don't do anything until they send a login message.
    * Later versions might also check a protocol version here.
