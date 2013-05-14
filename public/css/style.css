@@ -56,20 +56,6 @@ body {
   font-size: smaller;
 }
 
-.col1 {
-  background-color: #fdf9ff;
-}
-.col2 {
-  background-color: #fdfdff;
-}
-.col3 {
-  background-color: #fffdfb;
-}
-
-svg {
-  background-color: #fff;
-}
-
 /* Titles */
 h3 {
   margin: 0;
