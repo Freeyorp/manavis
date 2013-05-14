@@ -56,7 +56,7 @@ var mv = function(mv) {
         if (killxpShown) {
           if (mv.charts.type.filter() != "KILLXP") {
             /* Hide killxp charts */
-            killxpCharts.style("opacity", "0");
+            killxpCharts.style("display", "none");
             mv.charts.target.filterAll();
             mv.charts.wpn.filterAll();
             mv.charts.numAttackers.filterAll();
@@ -65,7 +65,7 @@ var mv = function(mv) {
         } else {
           if (mv.charts.type.filter() == "KILLXP") {
             /* Show killxp charts */
-            killxpCharts.style("opacity", "1");
+            killxpCharts.style("display", "block");
             killxpShown = true;
           }
         }
