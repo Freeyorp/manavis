@@ -17,7 +17,8 @@ var mv = function(mv) {
       /* dc's default date format is M/D/Y, which is confusing and not ISO 8901 */
       dc.dateFormat = d3.time.format("%Y-%m-%d %H:%M");
       mv.charts.blvl = bar(monoGroup(med(dc.barChart("#blvl-chart")), "blvl"))
-        .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl + 0.5]))
+        .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl + 1]))
+        .round(Math.round)
         ;
       mv.charts.type = pie(monoGroup(dc.pieChart("#type-chart"), "type"))
         ;
@@ -26,7 +27,8 @@ var mv = function(mv) {
       mv.charts.wpn = pie(monoGroup(dc.pieChart("#wpn-chart"), "wpn"))
         ;
       mv.charts.numAttackers = bar(monoGroup(thin(dc.barChart("#num-attackers-chart")), "numAttackers"))
-        .x(d3.scale.linear().domain([0, mv.heap.numAttackers.dim.top(1)[0].numAttackers + 0.5]))
+        .x(d3.scale.linear().domain([0, mv.heap.numAttackers.dim.top(1)[0].numAttackers + 1]))
+        .round(Math.round)
         .elasticX(true)
         ;
       mv.charts.map = height(monoGroup(margined(wide(dc.bubbleChart("#map-chart")))
