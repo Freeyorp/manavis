@@ -221,7 +221,6 @@ var mv = function(mv) {
           if (join.empty()) {
             join = group.append("a")
               .attr("class", "join")
-              .attr("href", "javascript:mv.connect.join(" + channelNames[i] + ");")
               .text("Join channel")
             ;
           }
@@ -229,7 +228,10 @@ var mv = function(mv) {
             /* We're in this channel */
             join.style("display", "none");
           } else {
-            join.style("display", "inline");
+            join
+              .style("display", "inline")
+              .attr("href", "javascript:mv.connect.join(" + channelNames[i] + ");")
+            ;
           }
         } else {
           var join = group.select(".join");
