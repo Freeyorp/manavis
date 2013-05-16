@@ -92,13 +92,13 @@ var mv = function(mv) {
     var f = dc.renderlet();
     dc.renderlet(function() {
       /* Hook a listener into dc's rendering routine. If it rerenders, broadcast the change. */
+      /* Call the old renderlet */
+      f();
       if (netrendering) {
         /* If we rendered due a change we received, don't broadcast it again. That would be A Bad Thing. */
         return;
       }
       socket.emit("filter", { filters: mv.charter.filters() });
-      /* Call the old renderlet */
-      f();
     });
   }
   function setOwnFilters(filters) {
