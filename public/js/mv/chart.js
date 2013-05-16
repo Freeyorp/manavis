@@ -27,8 +27,9 @@ var mv = function(mv) {
         .x(d3.scale.linear().domain([0, mv.heap.numAttackers.dim.top(1)[0].numAttackers + 0.5]))
         .elasticX(true)
         ;
-      mv.charts.map = monoGroup(margined(wide(dc.bubbleChart("#map-chart"))), "map")
-        .height(500)
+      mv.charts.map = height(monoGroup(margined(wide(dc.bubbleChart("#map-chart")))
+                                     , "map")
+                           , 500)
         .colorCalculator(d3.scale.category20c())
         /* X */
         .keyAccessor(function(d) { return d.value.e + 1; })
@@ -87,33 +88,45 @@ var mv = function(mv) {
   function wide(chart) {
     return chart
       .width(wideWidth)
-      ;
+    ;
   }
   function med(chart) {
     return chart
       .width(medWidth)
-      ;
+    ;
   }
   function thin(chart) {
     return chart
       .width(thinWidth)
-      ;
+    ;
   }
   function short(chart) {
+    return height(chart, 130);
+  }
+  function height(chart, size) {
+    chart.root()
+      .selectAll(".y-axis-label")
+      .style("top", (size / 2 + 25) + "px")
+    ;
+    chart.root()
+      .selectAll(".x-axis-label")
+      .style("top", (size - 15) + "px")
+    ;
     return chart
-      .height(130)
-      ;
+      .height(size)
+    ;
   }
   function margined(chart) {
     return chart
       .margins({left: 60, right: 18, top: 5, bottom: 30})
+    ;
   }
   function monoGroup(chart, name) {
     return chart
       .dimension(mv.heap[name].dim)
       .group(mv.heap[name].group)
       .transitionDuration(500)
-      ;
+    ;
   }
   function bar(chart) {
     return margined(short(chart))
@@ -122,14 +135,14 @@ var mv = function(mv) {
       .renderHorizontalGridLines(true)
       .title(function(d) { return d.key + ": " + d.value; })
       .brushOn(true)
-      ;
+    ;
   }
   function pie(chart) {
     return thin(chart)
       .radius(80)
       .height(165)
       .colorCalculator(d3.scale.category20c())
-      ;
+    ;
   }
   return mv;
 }(mv || {});

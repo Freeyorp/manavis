@@ -10,13 +10,19 @@
     <div class="side med col3">
       <div id="connect-status">
         <h3>Manavis users</h3>
+        <p class="info">These are the other users currently online on manavis. If you find something interesting to show, create a channel and get people to join to take a look!</p>
         <div id="users-status"></div>
       </div>
       <div id="blvl-chart">
         <h3>Character base level <a class="reset" style="display: none;" href="javascript:mv.charts.blvl.filterAll();dc.redrawAll();">clear</a></h3>
+        <div class="axis-label y-axis-label">XP instances</div>
+        <div class="axis-label x-axis-label">Base level</div>
       </div>
       <div id="stat-chart">
         <h3>Stat allocation</h3>
+        <p class="info">The more intense the color, the more XP instances.<br/>
+        Each subchart relates one attribute to another. This is redundant in places, such as with the str-agi chart and the agi-str chart, so the chart is symmetric.<br/>
+        To get an idea of how this works, try filtering a range of low levels above, then slide the filter right, watching how the stats increase as people gain more levels and can get more stats.<p>
       </div>
     </div>
     <div class="side thin col2">
@@ -32,15 +38,23 @@
         </div>
         <div id="num-attackers-chart">
           <h3>Number of attackers <a class="reset" style="display: none;" href="javascript:mv.charts.numAttackers.filterAll();dc.redrawAll();">clear</a><h3>
+          <p class="info">The number of characters responsible for attacking the mob. One character attacking a mob directly, and another attacking it with a dozen summons, would count as two attackers.</p>
+          <div class="axis-label y-axis-label">XP instances</div>
+          <div class="axis-label x-axis-label">Characters</div>
         </div>
       </div>
     </div>
     <div id="main" class="col1">
       <div id="date-chart">
         <h3>Date <a class="reset" style="display: none;" href="javascript:mv.charts.date.filterAll();dc.redrawAll();">clear</a></h3>
+        <div class="axis-label y-axis-label">XP instances</div>
+        <div class="axis-label x-axis-label">Date</div>
       </div>
       <div id="map-chart">
-        <h3>Map <span class="help" title="Bubble size indicates instances of experience gain for that map. X axis position indicates the sum of level experience gain for that map. Y axis position indicates the sum of job experience gain for that map.">[?]</span> <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Map <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a></h3>
+        <p class="info">The larger the bubble, the more XP instances for that map.</p>
+        <div class="axis-label y-axis-label">Total job XP gain</div>
+        <div class="axis-label x-axis-label">Total level XP gain</div>
       </div>
     </div>
   </div>

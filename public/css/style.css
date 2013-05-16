@@ -126,9 +126,42 @@ h3 {
   text-anchor: end;
 }
 
-#stat-chart text.dim-label {
+#stat-chart text.dim-label, .axis-label {
   font: 12px sans-serif;
   font-weight: bold;
+}
+
+.axis-label {
+  height: 0;
+  width: 0;
+  position: relative;
+  white-space: nowrap;
+}
+
+.x-axis-label {
+  left: 50%;
+}
+
+.y-axis-label {
+  -webkit-transform: rotate(-90deg);
+  -moz-transform: rotate(-90deg);
+  -ms-transform: rotate(-90deg);
+  -o-transform: rotate(-90deg);
+  transform: rotate(-90deg);
+  -webkit-transform-origin: 50% 50%;
+  -moz-transform-origin: 50% 50%;
+  -ms-transform-origin: 50% 50%;
+  -o-transform-origin: 50% 50%;
+  transform-origin: 50% 50%;
+}
+
+/* Chart meta info */
+
+p.info {
+  font: 10px sans-serif;
+  color: #777;
+  margin: 0 .4em;
+  padding: 0;
 }
 
 /* User list */
@@ -154,6 +187,15 @@ h3 {
 #users-status .channel {
   border: 1px gray solid;
   margin: 0 2em;
+}
+
+#users-status .channel:before {
+  content: "channel";
+  font: 10px sans-serif;
+  color: "#888";
+  padding: 0;
+  margin: 0;
+  display: block;
 }
 
 #users-status a {
