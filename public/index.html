@@ -14,7 +14,7 @@
         <div id="users-status"></div>
       </div>
       <div id="blvl-chart">
-        <h3>Character base level <a class="reset" style="display: none;" href="javascript:mv.charts.blvl.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Character base level</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a class="reset" style="display: none;" href="javascript:mv.charts.blvl.filterAll();dc.redrawAll();">clear</a></span></p>
         <div class="axis-label y-axis-label">XP instances</div>
         <div class="axis-label x-axis-label">Base level</div>
       </div>
@@ -27,17 +27,18 @@
     </div>
     <div class="side thin col2">
       <div id="type-chart">
-        <h3>Experience type <a class="reset" style="display: none;" href="javascript:mv.charts.type.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Experience type</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a href="javascript:mv.charts.type.filterAll();dc.redrawAll();">clear</a></span></p>
+        <p class="info">More charts shown when KILLXP is filtered.</p>
       </div>
       <div id="killxp-charts">
         <div id="target-chart">
-          <h3>Target <a class="reset" style="display: none;" href="javascript:mv.charts.target.filterAll();dc.redrawAll();">clear</a></h3>
+          <h3>Target</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a class="reset" style="display: none;" href="javascript:mv.charts.target.filterAll();dc.redrawAll();">clear</a></span></p>
         </div>
         <div id="wpn-chart">
-          <h3>Weapon <a class="reset" style="display: none;" href="javascript:mv.charts.wpn.filterAll();dc.redrawAll();">clear</a></h3>
+          <h3>Weapon</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a class="reset" style="display: none;" href="javascript:mv.charts.wpn.filterAll();dc.redrawAll();">clear</a></span></p>
         </div>
         <div id="num-attackers-chart">
-          <h3>Number of attackers <a class="reset" style="display: none;" href="javascript:mv.charts.numAttackers.filterAll();dc.redrawAll();">clear</a><h3>
+          <h3>Number of attackers</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a class="reset" style="display: none;" href="javascript:mv.charts.numAttackers.filterAll();dc.redrawAll();">clear</a></span></p>
           <p class="info">The number of characters responsible for attacking the mob. One character attacking a mob directly, and another attacking it with a dozen summons, would count as two attackers.</p>
           <div class="axis-label y-axis-label">XP instances</div>
           <div class="axis-label x-axis-label">Characters</div>
@@ -46,12 +47,12 @@
     </div>
     <div id="main" class="col1">
       <div id="date-chart">
-        <h3>Date <a class="reset" style="display: none;" href="javascript:mv.charts.date.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Date</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a class="reset" style="display: none;" href="javascript:mv.charts.date.filterAll();dc.redrawAll();">clear</a><span></p>
         <div class="axis-label y-axis-label">XP instances</div>
         <div class="axis-label x-axis-label">Date</div>
       </div>
       <div id="map-chart">
-        <h3>Map <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a></h3>
+        <h3>Map</h3> <p class="filterinfo"><span class="reset" style="display: none;">Active filter: <span class="filter"></span> <a class="reset" style="display: none;" href="javascript:mv.charts.map.filterAll();dc.redrawAll();">clear</a><span></p>
         <p class="info">The larger the bubble, the more XP instances for that map.</p>
         <div class="axis-label y-axis-label">Total job XP gain</div>
         <div class="axis-label x-axis-label">Total level XP gain</div>

@@ -164,6 +164,16 @@ p.info {
   padding: 0;
 }
 
+p.filterinfo {
+  font: 11px sans-serif;
+  color: #555;
+  margin: .4em;
+  padding: 0;
+  /* Specify size and block specifically, so that the space needed is always reserved */
+  display: block;
+  height: 11px;
+}
+
 /* User list */
 
 #connection-warning {

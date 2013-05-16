@@ -14,6 +14,8 @@ var mv = function(mv) {
         .xUnits(d3.time.hours)
         .xAxisPadding(2)
         ;
+      /* dc's default date format is M/D/Y, which is confusing and not ISO 8901 */
+      dc.dateFormat = d3.time.format("%Y-%m-%d %H:%M");
       mv.charts.blvl = bar(monoGroup(med(dc.barChart("#blvl-chart")), "blvl"))
         .x(d3.scale.linear().domain([0, mv.heap.blvl.dim.top(1)[0].pcstat.blvl + 0.5]))
         ;
