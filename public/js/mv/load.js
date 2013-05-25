@@ -29,6 +29,7 @@ var mv = function(mv) {
     loader.numfiles = function() { return numfiles; };
     loader.filenames = function() { return filenames; };
     loader.curfile = function() { return curfile; };
+    loader.setname = function(n) {};
     loader.init = function(each, after) {
       document.getElementById('input').addEventListener('change', function(fevt) {
         numfiles = fevt.target.files.length;
@@ -37,20 +38,38 @@ var mv = function(mv) {
         var reader = new FileReader();
         loader.onbulkstart(fevt);
         reader.onerror = function() { loader.onerror.apply(null, arguments) };
-        reader.onprogress = function() { loader.onprogress.apply(null, arguments) };
+        reader.onprogress = function(evt) { if (evt.lengthComputable) { loader.onprogress(evt.loaded, evt.total) } };
         reader.onabort = function() { loader.onabort.apply(null, arguments) };
         reader.onloadstart = function() { loader.onloadstart.apply(null, arguments) };
         reader.onload = function(evt) {
-          each(reader.result, curfile, numfiles);
-          ++curfile;
-          if (curfile == numfiles) {
-            after();
-          } else {
-            nextFile();
-          }
+          each(reader.result, filenames[curfile], function() {
+            ++curfile;
+            if (curfile == numfiles) {
+              after();
+            } else {
+              nextFile();
+            }
+          });
         };
         function nextFile() {
-          reader.readAsBinaryString(fevt.target.files[curfile]);
+          var file = fevt.target.files[curfile];
+          loader.onloadstart();
+          if (file.name.indexOf(".zip", name.length - 4) != -1) {
+            zip.createReader(new zip.BlobReader(file), function(zipReader) {
+              zipReader.getEntries(function(entries) {
+                entries.forEach(function(d, i) {
+                  loader.setname(file.name + "'; unzipping '" + d.filename + " (" + (i + 1) + "/" + entries.length + ")");
+                  d.getData(new zip.BlobWriter(), function(blob) {
+                    loader.setname(d.filename);
+                    reader.readAsBinaryString(blob);
+                  }, loader.onprogress);
+                });
+              }, loader.onerror);
+            }, loader.onerror);
+          } else {
+            loader.setname(file);
+            reader.readAsBinaryString(file);
+          }
         }
         nextFile();
       }, false);
