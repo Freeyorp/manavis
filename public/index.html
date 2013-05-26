@@ -76,9 +76,9 @@
       <p>You can load any number of files at once.</p>
       <p>Please note that this is very js intensive. The tab may briefly lock up as it loads everything.</p>
       <div>
-        <input type="file" id="input" name="records[]" multiple />
+        <input type="file" id="input" name="records[]" multiple disabled />
         <output id="list"></output>
-        or <a href="javascript:mv.loader.use(['/logs/map.scrubbed.latest.zip']);" class="button">Use the most recent dataset</a>
+        or <a id="latest-link" href="javascript:mv.loader.use(['/logs/map.scrubbed.latest.zip']);" class="button disabled-button">Use the most recent dataset</a>
       </div>
       <div id="filesbar" class="progressbar fader">
         <div class="percent">0%</div>

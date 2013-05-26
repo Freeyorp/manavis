@@ -289,3 +289,11 @@ a:hover {
   border-top-color: #1b435e;
   background: #1b435e;
 }
+
+.disabled-button, .disabled-button:hover, .disabled-button:active {
+  border-top: 1px solid #999;
+  background: #777;
+  text-decoration: none;
+  color: white;
+}
+

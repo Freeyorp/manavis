@@ -31,6 +31,9 @@ var mv = function(mv) {
     mv.loader.setname = function(n) { name = n; };
     /* Set zip.js worker path */
     zip.workerScriptsPath = "/js/zip/WebContent/";
+    /* Init done! Enable controls. */
+    document.getElementById("input").disabled = false;
+    d3.select("#latest-link").attr("class", "button");
   };
   /* When a file has finished loading, handle it. */
   function handleFile(data, name, after) {
