@@ -33,7 +33,7 @@ var mv = function(mv) {
         ;
       mv.charts.map = height(monoGroup(margined(wide(dc.bubbleChart("#map-chart")))
                                      , "map")
-                           , 500)
+                           , 655)
         .colorCalculator(d3.scale.category20c())
         /* X */
         .keyAccessor(function(d) { return d.value.e + 1; })

@@ -52,10 +52,6 @@ body {
   width: 250px;
 }
 
-#main, .side {
-  font-size: smaller;
-}
-
 /* Titles */
 h3 {
   margin: 0;
@@ -190,8 +186,12 @@ p.filterinfo {
   border-left: 1px black solid;
   border-bottom: 1px black solid;
   display: none;
-  height: 200px;
+  height: 208px;
   overflow-y: scroll;
+}
+
+#connect-status a {
+  font-size: smaller;
 }
 
 #users-status .channel {
