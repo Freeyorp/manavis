@@ -12,7 +12,6 @@ var mv = function(mv) {
   filesbar.label = function () {
     return fbase() == '100%' ? "Loaded " + mv.loader.numfiles() + " file(s) - Done!" : "Loading file " + mv.loader.curfile() + " of " + mv.loader.numfiles() + " - " + fbase();
   };
-    }
   /* Initialise modules that require initialisation */
   mv.init = function() {
     /* Loader module */
@@ -32,7 +31,6 @@ var mv = function(mv) {
     mv.loader.setname = function(n) { name = n; };
     /* Set zip.js worker path */
     zip.workerScriptsPath = "/js/zip/WebContent/";
-    status.text("Ready");
   };
   /* When a file has finished loading, handle it. */
   function handleFile(data, name, after) {
