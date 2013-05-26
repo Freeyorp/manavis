@@ -58,7 +58,6 @@ var mv = function(mv) {
       var req = d3.xhr(urllist[curfile])
         .on('progress', function(d, i) { reader.onprogress(d3.event); })
         .on('load', function(d) {
-          console.log(typeof(d), typeof(d) == "object" ? d : d.length);
           loadBlobable(d.response, urllist[curfile]);
         })
         .responseType("blob")
@@ -106,11 +105,9 @@ var mv = function(mv) {
   }
   function loadBlobable(blobable, name) {
     mv.loader.onloadstart();
-    console.log(name);
     if (name.indexOf(".zip", name.length - 4) != -1) {
       zip.createReader(new zip.BlobReader(blobable), function(zipReader) {
         zipReader.getEntries(function(entries) {
-          console.log(entries);
           entries.forEach(function(d, i) {
             mv.loader.setname(name + "'; 'Unzipping " + d.filename + " (" + (i + 1) + "/" + entries.length + ")");
             d.getData(new zip.BlobWriter(), function(blob) {
