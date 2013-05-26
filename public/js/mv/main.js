@@ -16,18 +16,18 @@ var mv = function(mv) {
   mv.init = function() {
     /* Loader module */
     /* Callbacks for loading files from the filesystem */
-    mv.loader.onbulkstart = function(fevt) {
+    mv.loader.onbulkstart = function() {
       loadbar.show();
       filesbar.show();
     };
-    mv.loader.onloadstart = function(evt) {
+    mv.loader.onloadstart = function() {
       filesbar.update(mv.loader.curfile(), mv.loader.numfiles());
       loadbar.reset();
     };
     mv.loader.onprogress = function(current, total) {
       loadbar.update(current, total);
     };
-    mv.loader.init(handleFile, postLoading);
+    mv.loader.init(d3.select("#input"), handleFile, postLoading);
     mv.loader.setname = function(n) { name = n; };
     /* Set zip.js worker path */
     zip.workerScriptsPath = "/js/zip/WebContent/";
