@@ -104,29 +104,38 @@ h3 {
 
 /* Stat chart */
 
-#stat-chart .border-line {
+/* Border lines */
+#stat-chart .x-axis-dim-label line, #stat-chart .y-axis-dim-label line {
   fill: none;
-  stroke: #ccc;
   opacity: .5;
   shape-rendering: crispEdges;
 }
 
+#stat-chart .x-axis-dim-label line {
+  stroke: #666;
+}
+#stat-chart .y-axis-dim-label line {
+  stroke: #bbb;
+}
+
+/* Text labels */
+/* Domain labels */
 #stat-chart text {
   font: 10px sans-serif;
 }
-
 #stat-chart .x-axis-dim-label text {
   text-anchor: middle;
 }
 #stat-chart .y-axis-dim-label text {
   text-anchor: end;
 }
-
+/* Dimension labels, keeping a consistent style as axis labels */
 #stat-chart text.dim-label, .axis-label {
   font: 12px sans-serif;
   font-weight: bold;
 }
 
+/* Axis labels */
 .axis-label {
   height: 0;
   width: 0;
