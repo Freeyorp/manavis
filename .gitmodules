@@ -9,4 +9,4 @@
 	url = git://github.com/Freeyorp/dc.js.git
 [submodule "public/js/zip"]
 	path = public/js/zip
-	url = https://github.com/gildas-lormeau/zip.js.git
+	url = git://github.com/gildas-lormeau/zip.js.git
