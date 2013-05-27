@@ -261,7 +261,7 @@ function trellisChart(anchor, monoGroups) {
       .on("brush", function () {
         var extent = extendBrush(d, brushG);
 
-        redrawBrush(d, i);
+        redrawBrush(d, i, brushG);
 
         if (brushIsEmpty(extent, d.brush)) {
           dc.events.trigger(function () {
@@ -287,13 +287,12 @@ function trellisChart(anchor, monoGroups) {
     }
   }
 
-  function redrawBrush(d, i) {
+  function redrawBrush(d, i, brushG) {
     if (d.filter() && d.brush().empty())
       d.brush.extent(d.filter());
 
-    var gBrush = d3.select(this).select("g.brush");
-    gBrush.call(d.brush.x(_scale));
-    gBrush.selectAll("rect").attr("height", chartLen);
+    brushG.call(d.brush.x(_scale));
+    brushG.selectAll("rect").attr("height", chartLen);
 
     // TODO: fade the deselected area
   }
