@@ -14,6 +14,21 @@ var mv = function(mv) {
         .xUnits(d3.time.hours)
         .xAxisPadding(2)
         ;
+      mv.charts.date.filterCompare = function(l, r) {
+        return ((l instanceof Date) ? l : new Date(l))
+            == ((r instanceof Date) ? r : new Date(r));
+      };
+      // Remember the old date filter
+      // FIXME: Find a more elegant way to do this
+      var innerDateFilter = mv.charts.date.filter;
+      mv.charts.date.filter = function(_) {
+        if (!arguments.length) return innerDateFilter();
+        if (!_) return innerDateFilter(_);
+        _ = _ instanceof Array
+          ? _.map(function(d) { return d instanceof Date ? d : new Date(d); })
+          : (_ instanceof Date ? _ : new Date(_));
+        return innerDateFilter(_);
+      }
       /* dc's default date format is M/D/Y, which is confusing and not ISO 8901 */
       dc.dateFormat = d3.time.format("%Y-%m-%d %H:%M");
       mv.charts.blvl = bar(monoGroup(med(dc.barChart("#blvl-chart")), "blvl"))
@@ -52,7 +67,34 @@ var mv = function(mv) {
         .title(function(d) { return "Map " + d.key + ":" + d.value.r; })
         .renderTitle(true)
         ;
-      mv.charts.stats = trellisChart("#stat-chart", ["str", "agi", "vit", "dex", "int", "luk"].map(function(d) { mv.heap[d].name = d; return mv.heap[d]; }));
+      var attrs = ["str", "agi", "vit", "dex", "int", "luk"];
+      mv.charts.stats = trellisChart("#stat-chart", attrs.map(function(d) { mv.heap[d].name = d; return mv.heap[d]; }));
+      mv.charts.stats.filterCompare = function(l, r) {
+        /* Compare each attribute in turn. FIXME: Duplicated code with connect.js */
+        if (l == null && r == null)
+          return true;
+        if (l == null || r == null)
+          return false;
+        for (var key in attrs) {
+          var attr = attrs[key];
+          if (attr in l && attr in r) {
+            if (l[attr] instanceof Array) {
+              /* Range filter */
+              if (!(r[attr] instanceof Array)
+               || l[attr][0] != r[attr][0]
+               || l[attr][1] != r[attr][1]) {
+                return false;
+              }
+            } else if ((r[attr] instanceof Array) || l[attr] != r[attr]) {
+              /* Exact filter */
+              return false;
+            }
+          } else if (attr in l || attr in r) {
+            return false;
+          }
+        }
+        return true;
+      }
       mv.charts.type.filter("KILLXP");
       var killxpShown = true;
       var killxpCharts = d3.select("#killxp-charts");

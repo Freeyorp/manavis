@@ -105,30 +105,30 @@ var mv = function(mv) {
     /* See if there's any difference - if there isn't, don't update. */
     var change = false;
     var key;
+    function filterCompare(key, l, r) {
+      return ("filterCompare" in mv.charts[key]) ? mv.charts[key].filterCompare(l, r) : l == r;
+    }
     /* Check for keys in the filters to apply which are not in our charts. */
     for (key in filters) {
-      if (key == "date") {
-        /*
-         * Special case! FIXME: Find a more elegant way to handle this
-         */
-        filters[key][0] = new Date(filters[key][0]);
-        filters[key][1] = new Date(filters[key][1]);
-      }
       if (!(key in mv.charts))
         continue;
-      var filter = mv.charts[key].filter();
-      if (typeof(filter) == "array") {
+      /* The two filters to compare. */
+      var l = mv.charts[key].filter();
+      var r = filters[key];
+      if (l instanceof Array) {
         /* Crossfilter uses arrays to filter ranges. Exactly the first two elements are significant. */
-        if (filter[0] == filters[key][0] &&
-            filter[1] == filters[key][1]) {
+        if ((r instanceof Array)
+         && filterCompare(key, l[0], r[0])
+         && filterCompare(key, l[1], r[1])) {
           continue;
         }
-      } else if (filter == filters[key]) {
+      } else if (!(r instanceof Array) && filterCompare(key, l, r)) {
+        /* Exact filter */
         continue;
       }
       /* This filter differs. Apply it. */
       change = true;
-      mv.charts[key].filter(filters[key]);
+      mv.charts[key].filter(r);
     }
     /* Check for keys in our charts which are not in the filters to apply. */
     for (key in mv.charts) {

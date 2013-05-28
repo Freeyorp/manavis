@@ -31,14 +31,15 @@ function trellisChart(anchor, monoGroups) {
   var g = anchor.select("g");
 
   /* Main columns, one for each attr */
-  var columns;
   var colBodies;
+  var brushContainers;
 
   var _chart = function() {
     if (g.empty()) {
       renderBase();
     }
     colBodies.each(redrawCells);
+    brushContainers.each(redrawBrush);
   }
 
   function renderBase() {
@@ -157,19 +158,32 @@ function trellisChart(anchor, monoGroups) {
         ;
       })
     ;
-    dimLabelsG.selectAll("g.brush-container")
+    brushContainers = dimLabelsG.selectAll("g.brush-container")
       .data(monoGroups)
       .enter().append("g").attr("class", "brush-container")
       .attr("transform", function(d, i) { return "translate(" + (i * subChartLength) + ",0)"; })
       .each(function (d, i) {
         d.id = i;
         d.brush = d3.svg.brush();
+        d.brushRedrawNeeded = false;
         d.filter = function(_) {
           if (!arguments.length) return d._filter;
-          d.dim.filter(_);
-          d._filter = _;
+          if (_ != null) {
+            d._filter = _;
+            d.brush.extent(_);
+            d.dim.filter(_);
+            d.brushRedrawNeeded = true;
+          } else {
+            d.filterAll();
+          }
           return d;
         };
+        d.filterAll = function() {
+          d._filter = null;
+          d.brush.clear();
+          d.dim.filterAll();
+          d.brushRedrawNeeded = true;
+        }
       })
       .each(renderBrush)
     ;
@@ -179,7 +193,7 @@ function trellisChart(anchor, monoGroups) {
     * monoGroups is an array of each stat dimension. We can consider each column to have data in the following format:
     *  { group: function, dim: function, name: stat }
     */
-    columns = g.selectAll(".column")
+    var columns = g.selectAll(".column")
       .data(monoGroups);
     var colE = columns.enter().append("g").attr("class", "column")
       
@@ -253,7 +267,8 @@ function trellisChart(anchor, monoGroups) {
   }
 
   function renderBrush(d, i) {
-    var columnG = d3.select(this);
+    var columnGDOM = this;
+    var columnG = d3.select(columnGDOM);
     var brushG = columnG.select(".brush");
 
     d.brush
@@ -261,7 +276,7 @@ function trellisChart(anchor, monoGroups) {
       .on("brush", function () {
         var extent = extendBrush(d, brushG);
 
-        redrawBrush(d, i, brushG);
+        redrawBrush.call(columnGDOM, d, i);
 
         if (brushIsEmpty(extent, d.brush)) {
           dc.events.trigger(function () {
@@ -287,12 +302,19 @@ function trellisChart(anchor, monoGroups) {
     }
   }
 
-  function redrawBrush(d, i, brushG) {
-    if (d.filter() && d.brush.empty())
+  function redrawBrush(d, i) {
+    if (!d.brushRedrawNeeded) {
+      return;
+    }
+    if (d.filter() && d.brush.empty()) {
       d.brush.extent(d.filter());
+    }
 
+    var brushG = d3.select(this).select(".brush");
     brushG.call(d.brush.x(_scale));
     brushG.selectAll("rect").attr("height", chartLen);
+
+    d.brushRedrawNeeded = false;
 
     // TODO: fade the deselected area
   }
@@ -326,17 +348,34 @@ function trellisChart(anchor, monoGroups) {
          + "V" + (2 * y - 8);
   }
 
+  /*
+   * Interface assumptions:
+   *  - filter with one argument uses this argument as a filter in a manner defined by the chart.
+   *  - filter with no arguments returns a description of the chart's active filter(s) suitable for applying to a filter() function of the same chart type.
+   *
+   * Most chart's filter() uses the data type of crossfilter's filter(). The trellis chart, using multiple dimensions, cannot.
+   * Therefore, it uses the format { [name] -> filter } where filter is the format used by crossfilter's filter.
+   */
   _chart.filter = function(_) {
-    /*
-     * TODO:
-     * This is going to be interesting. As the chart is not charting a single
-     * monogroup, and most code is built around this assumption, this might
-     * well end up being a messy special case.
-     */
     if (!arguments.length) {
-      return null;
+      var ret = null;
+      for (var key in monoGroups) {
+        if (monoGroups[key].filter()) {
+          (ret || (ret = {}))[attrs[key]] = monoGroups[key].filter();
+        }
+      }
+      return ret;
+    }
+    for (key in _) {
+      monoGroups[attrsIdByName[key]].filter(_[key]);
     }
     return _chart;
+  }
+
+  _chart.filterAll = function(_) {
+    for (var key in monoGroups) {
+      monoGroups[key].filterAll();
+    }
   }
 
   return _chart;
