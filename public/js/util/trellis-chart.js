@@ -188,7 +188,6 @@ function trellisChart(anchor, monoGroups) {
     colBodies = columns.selectAll(".chartBody")
       .data(function(d) { return [d]; }).enter().append("g")
       .attr("class", "chartBody")
-      .each(function(d, i, j) { console.log("Created chart body", d, i, j); })
     ;
   }
 
@@ -289,7 +288,7 @@ function trellisChart(anchor, monoGroups) {
   }
 
   function redrawBrush(d, i, brushG) {
-    if (d.filter() && d.brush().empty())
+    if (d.filter() && d.brush.empty())
       d.brush.extent(d.filter());
 
     brushG.call(d.brush.x(_scale));
