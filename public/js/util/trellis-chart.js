@@ -166,6 +166,7 @@ function trellisChart(anchor, monoGroups) {
         d.brush = d3.svg.brush();
         d.filter = function(_) {
           if (!arguments.length) return d._filter;
+          d.dim.filter(_);
           d._filter = _;
           return d;
         };
@@ -265,12 +266,12 @@ function trellisChart(anchor, monoGroups) {
 
         if (brushIsEmpty(extent, d.brush)) {
           dc.events.trigger(function () {
-            _chart.filter(null);
+            d.filter(null);
             dc.redrawAll();
           });
         } else {
           dc.events.trigger(function () {
-            _chart.filter([extent[0], extent[1]]);
+            d.filter([extent[0], extent[1]]);
             dc.redrawAll();
           }, dc.constants.EVENT_DELAY);
         }
@@ -326,14 +327,17 @@ function trellisChart(anchor, monoGroups) {
          + "V" + (2 * y - 8);
   }
 
-  _chart.filter = function() {
+  _chart.filter = function(_) {
     /*
      * TODO:
      * This is going to be interesting. As the chart is not charting a single
      * monogroup, and most code is built around this assumption, this might
      * well end up being a messy special case.
      */
-    return null;
+    if (!arguments.length) {
+      return null;
+    }
+    return _chart;
   }
 
   return _chart;
