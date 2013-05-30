@@ -44,6 +44,36 @@ body {
 
 /* Columns */
 
+/* General column utility */
+.column-container {
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
+}
+.column-container > div {
+  position: relative;
+  float: left;
+}
+
+/* Separators between columns */
+.column-container-separated > div:first-child:before, .column-container-separated > div:first-child:after {
+  content: "";
+  display: block;
+  position: absolute;
+  z-index: 1;
+  top: 0; bottom: -800%; left:-6%;
+  width: 2px;
+  border: 1px solid #555;
+  border-width: 0 1px;
+  margin: 0 0 0 -2px;
+  background: #fff;
+}
+.column-container-separated > div:first-child:after {
+  left: auto; right: -6%;
+  margin: 0 -2px 0 0;
+}
+
+/* Top-level column widths */
 .med {
   width: 400px;
 }
@@ -72,6 +102,31 @@ h3 {
   margin: auto;
   background-color: #fff;
   padding: 20px;
+}
+
+#loadinfo-online-desc {
+  border:1px solid gray;
+  border-width: 0 0 1px 0;
+  padding: 1em;
+}
+
+/* Loadinfo columns */
+.loader-column-container {
+  background: rgb(226, 235, 253);
+}
+.loader-column-container:after {
+  content:"";
+  display:block;
+  position:absolute;
+  z-index:-1;
+  top:0; right:0; bottom:0;
+  left:50%;
+  background: rgb(247, 250, 193);
+}
+
+.loader-column-container > div {
+  width: 45%;
+  margin: 0 2.5% 1em 2.5%;
 }
 
 /* Hide charts while loadinfo is shown */
