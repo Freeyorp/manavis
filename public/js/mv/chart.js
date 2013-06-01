@@ -53,9 +53,9 @@ var mv = function(mv) {
         /* X */
         .keyAccessor(function(d) { return d.value.e + 1; })
         /* Y */
-        .valueAccessor(function(d) { return d.value.j + 1; })
+        .valueAccessor(function(d) { return d.value.r + 1; })
         /* R */
-        .radiusValueAccessor(function(d) { return Math.sqrt(d.value.r); })
+        .radiusValueAccessor(function(d) { return 1; })
         .maxBubbleRelativeSize(0.045)
         .x(d3.scale.log().domain([1, 100000]))
         .y(d3.scale.log().domain([1, 300000]))
