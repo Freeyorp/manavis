@@ -53,7 +53,7 @@ var mv = function(mv) {
         /* X */
         .keyAccessor(function(d) { return d.value.e + 1; })
         /* Y */
-        .valueAccessor(function(d) { return d.value.r ? (d.value.str / d.value.r) : 0; })
+        .valueAccessor(function(d) { return d.value.r ? (d.value.str * 10/ d.value.r) : 0; })
         /* R */
         .radiusValueAccessor(function(d) { return 1; })
         .maxBubbleRelativeSize(0.045)
