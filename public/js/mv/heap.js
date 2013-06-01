@@ -5,9 +5,9 @@ var mv = function(mv) {
     var monoGroups = {};
     var statGran = 10;
     heap.init = function() {
-      function ea(p, d) { p.e += d.e; p.j += d.j; p.r++; return p; }
-      function es(p, d) { p.e -= d.e; p.j -= d.j; p.r--; return p; }
-      function ez(p, d) { return { e: 0, j: 0, r: 0 }; }
+      function ea(p, d) { p.e += d.e; p.j += d.j; p.r++; p.str += d.pcstat.str; p.agi += d.pcstat.agi; return p; }
+      function es(p, d) { p.e -= d.e; p.j -= d.j; p.r--; p.str -= d.pcstat.str; p.agi -= d.pcstat.agi; return p; }
+      function ez(p, d) { return { e: 0, j: 0, r: 0, str: 0, agi: 0 }; }
       heap.cfdata = crossfilter(mv.parser.records);
       heap.all = heap.cfdata.groupAll().reduce(ea, es, ez);
       monoGroup("date", function(d) { return d3.time.hour.round(d.date); });
