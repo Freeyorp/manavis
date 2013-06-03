@@ -8,7 +8,6 @@ var mv = function(mv) {
     var charter = {};
     charter.init = function() {
       mv.charts.date = bar(monoGroup(wide(dc.barChart("#date-chart")), "date"))
-        .centerBar(true)
         .elasticX(true)
         .x(d3.time.scale().domain([mv.heap.date.dim.bottom(1)[0].date, mv.heap.date.dim.top(1)[0].date]).nice(d3.time.hour))
         .xUnits(d3.time.hours)
