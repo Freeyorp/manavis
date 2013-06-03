@@ -52,7 +52,7 @@ var mv = function(mv) {
        *  2 -> Record and all succeeding records are well defined
        */
       monoGroup("def", function(d) { if (d.pcstat == undefined) { return 0; } if (d.date <= mv.parser.fullyDefinedCutoff()) { return 1; } return 2; });
-      heap.def.dim.filter([1,2]);
+      heap.def.dim.filter([1,3]);
     }
     function monoGroup(name, mapping) {
       heap[name] = {};
