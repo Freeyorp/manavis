@@ -4,8 +4,8 @@
 var map = function(){\
   var map = {};\
   var maps = {
-/^Loading Maps/,/^Maps Loaded/ {
-  s/^Loading Maps \[\([0-9]\+\)\/[0-9]\+\]: data\\\(.*\)\.gat/    "\1": "\2",/p;
+/^.\?Loading Maps/,/^.\?Maps Loaded/ {
+  s/^.\?Loading Maps \[\([0-9]\+\)\/[0-9]\+\]: data\\\(.*\)\.gat.*/    "\1": "\2",/p;
 }
 $i\
   };\
