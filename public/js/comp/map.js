@@ -114,7 +114,11 @@ var map = function(){
   };
   map.nameByServerID = function(serverID, date) {
     /* TODO: Merged output format suitable for converting records running under different data */
-    return maps[serverID];
+    /*
+     * Now that the new server format simply outputs the human readable map name, this lookup is largely no longer required.
+     * It is still preserved here for backwards compatability.
+     */
+    return serverID in maps ? maps[serverID] : serverID;
   }
   return map;
 }();
