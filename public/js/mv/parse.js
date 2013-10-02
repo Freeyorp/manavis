@@ -64,7 +64,7 @@ var mv = function(mv) {
   };
   function checkXP(e) {
     /* Try to parse an XP record. */
-    var d = e.match(/^(\d+\.\d+) PC(\d+) ([^,]+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);;
+    var d = e.match(/^(\d+\.\d+|\d+-\d+-\d+ \d+:\d+:\d+\.\d+):? PC(\d+) ([^,]+):(\d+),(\d+) GAINXP (\d+) (\d+) (\w+)/);;
     if (!d) {
       return false;
     }
@@ -73,7 +73,7 @@ var mv = function(mv) {
     var mapSID = parseInt(d[3]);
     /* Record timestamp. */
     var ts = new Date(0);
-    ts.setUTCSeconds(d[1]);
+    ts.setUTCSeconds(d[1]) || (ts = new Date(d[1])); /* Backwards compatability - older logs used unix timestamps. */
     var rec = {
       date: ts,
       pc:   parseInt(d[2]),
@@ -148,7 +148,7 @@ var mv = function(mv) {
     return true;
   }
   function checkDmg(e) {
-    var d = e.match(/^(\d+\.\d+) PC(\d+) ([^,]+):(\d+),(\d+) ([A-Z]+)DMG MOB(\d+) (\d+) FOR (\d+) (?:WPN|BY) ([^ ]+)/);
+    var d = e.match(/^(\d+\.\d+|\d+-\d+-\d+ \d+:\d+:\d+\.\d+):? PC(\d+) ([^,]+):(\d+),(\d+) ([A-Z]+)DMG MOB(\d+) (\d+) FOR (\d+) (?:WPN|BY) ([^ ]+)/);
     if (!d) {
       return false;
     }
@@ -162,7 +162,7 @@ var mv = function(mv) {
     return true;
   }
   function checkMobMobDmg(e) {
-    var d = e.match(/^^(\d+\.\d+) PC(\d+) ([^,]+):(\d+),(\d+) MOB-TO-MOB-DMG FROM MOB(\d+) (\d+) TO MOB(\d+) (\d+) FOR (\d+)/);
+    var d = e.match(/^(\d+\.\d+|\d+-\d+-\d+ \d+:\d+:\d+\.\d+):? PC(\d+) ([^,]+):(\d+),(\d+) MOB-TO-MOB-DMG FROM MOB(\d+) (\d+) TO MOB(\d+) (\d+) FOR (\d+)/);
     if (!d) {
       return false;
     }
@@ -177,7 +177,7 @@ var mv = function(mv) {
     return true;
   }
   function checkMobDeath(e) {
-    var d = e.match(/^(\d+\.\d+) MOB(\d+) DEAD/);
+    var d = e.match(/^(\d+\.\d+|\d+-\d+-\d+ \d+:\d+:\d+\.\d+):? MOB(\d+) DEAD/);
     if (!d) {
       return false;
     }
