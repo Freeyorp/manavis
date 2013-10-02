@@ -77,7 +77,7 @@ var mv = function(mv) {
     var rec = {
       date: ts,
       pc:   parseInt(d[2]),
-      map:  map.nameByServerID(parseInt(d[3]), ts),
+      map:  map.nameByServerID(d[3], ts),
       x:    parseInt(d[4]),
       y:    parseInt(d[5]),
       e:    parseInt(d[6]),
