@@ -119,7 +119,7 @@ var mv = function(mv) {
     return true;
   }
   function checkStat(e) {
-    var d = e.match(/^(?:\d+\.\d+) PC(\d+) (?:[^,]+):(?:\d+),(?:\d+) STAT (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) /);
+    var d = e.match(/^(?:\d+\.\d+|\d+-\d+-\d+ \d+:\d+:\d+\.\d+):? PC(\d+) (?:[^,]+):(?:\d+),(?:\d+) STAT (\d+) (\d+) (\d+) (\d+) (\d+) (\d+) /);
     if (!d) {
       return false;
     }
