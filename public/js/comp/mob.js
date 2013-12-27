@@ -93,9 +93,20 @@ var mob = function(){
     1101:"DemonicSpirit",
     1102:"Luvia",
     1103:"WitchGuard",
+    1104:"DemonicMouboo",
+    1105:"ViciousSquirrel",
+    1106:"WickedMushroom",
+    1107:"Bluepar",
+    1108:"AngryFireGoblin",
+    1109:"AngrySeaSlime",
+    1110:"AngryGreenSlim",
+    1111:"CandiedSlime",
+    1112:"Santaboo",
+    1113:"Pollett",
+    1114:"Nutcracker",
   };
   mob.nameByServerID = function(serverID) {
-    return serverID in mobs ? mobs[serverID] : "UNDEFINED";
+    return serverID in mobs ? mobs[serverID] : String(serverID);
   }
   return mob;
 }();
