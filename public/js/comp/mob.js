@@ -47,6 +47,7 @@ var mob = function(){
     1046:"SnakeLord",
     1047:"Poltergeist",
     1049:"Bee",
+    1054:"Troll",
     1055:"Butterfly",
     1056:"CaveMaggot",
     1057:"AngryScorpion",
@@ -104,6 +105,8 @@ var mob = function(){
     1112:"Santaboo",
     1113:"Pollett",
     1114:"Nutcracker",
+    1116:"UndeadWitch",
+    1117:"UndeadTroll",
   };
   mob.nameByServerID = function(serverID) {
     return serverID in mobs ? mobs[serverID] : String(serverID);
